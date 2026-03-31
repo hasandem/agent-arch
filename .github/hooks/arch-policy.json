@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "sh .github/skills/arch-consume/scripts/resolve-context.sh",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "sh .github/skills/arch-governance/scripts/pre-tool-gate.sh",
+        "timeout": 15
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "sh .github/skills/arch-governance/scripts/post-tool-validate.sh",
+        "timeout": 20
+      }
+    ]
+  }
+}
