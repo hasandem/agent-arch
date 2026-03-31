@@ -13,6 +13,7 @@
 tjenesterepos i organisasjonen. Det inneholder arkitekturbeslutninger,
 kontrakter, standarder og retningslinjer — strukturert slik at AI-agenter
 kan lese, foreslå endringer via issues, og levere konkrete endringer via PRs.
+Alle normative arkitekturdokumenter ligger under `docs/arkitektur/`.
 
 ### Designprinsipper
 
@@ -170,30 +171,30 @@ uttrekk fra arch-repo-dokumenter uten å fylle kontekstvinduet.
 arch-read --index informasjon
 
 # Nivå 2: Hent agent-sammendrag (default)
-arch-read informasjon/fhir/consent.md
+arch-read docs/arkitektur/informasjon/fhir/consent.md
 
 # Nivå 3: Sammendrag + løsningsarkitektur
-arch-read informasjon/fhir/consent.md --løsning
+arch-read docs/arkitektur/informasjon/fhir/consent.md --løsning
 
 # Nivå 4: Sammendrag + målarkitektur
-arch-read informasjon/fhir/consent.md --mål
+arch-read docs/arkitektur/informasjon/fhir/consent.md --mål
 
 # Full: Hele dokumentet
-arch-read informasjon/fhir/consent.md --full
+arch-read docs/arkitektur/informasjon/fhir/consent.md --full
 
 # Spesifikk seksjon (fuzzy match, h2 og h3)
-arch-read informasjon/fhir/consent.md --seksjon "Events"
-arch-read informasjon/fhir/consent.md --seksjon "Datamodell"
+arch-read docs/arkitektur/informasjon/fhir/consent.md --seksjon "Events"
+arch-read docs/arkitektur/informasjon/fhir/consent.md --seksjon "Datamodell"
 
 # Søk i alle agent-sammendrag
 arch-read --search "MedicationRequest"
 arch-read --search "break-the-glass"
 
 # Token-estimat per seksjon
-arch-read informasjon/fhir/consent.md --tokens
+arch-read docs/arkitektur/informasjon/fhir/consent.md --tokens
 
 # Valider at dokumentet følger kontrakten
-arch-read informasjon/fhir/consent.md --check
+arch-read docs/arkitektur/informasjon/fhir/consent.md --check
 
 # List tilgjengelige lag
 arch-read --list
@@ -251,175 +252,20 @@ myorg/arch/
 ├── README.md
 ├── CODEOWNERS
 │
-├── motivasjon/                          # [M] — HVORFOR
-│   ├── INDEX.md
-│   ├── interessenter.md
-│   ├── drivere/
-│   │   ├── digitalisering-helsesektoren.md
-│   │   ├── pasientrettigheter.md
-│   │   └── teknologiutvikling.md
-│   ├── maal/
-│   │   ├── strategiske-maal.md
-│   │   └── kvalitetsmal.md
-│   ├── prinsipper/
-│   │   ├── overordnede-prinsipper.md
-│   │   ├── integrasjonsprinsipper.md
-│   │   └── sikkerhetsprinsipper.md
-│   ├── krav/
-│   │   ├── regulatoriske-krav.md
-│   │   └── tekniske-begrensninger.md
-│   └── vurderinger/
-│       └── teknologivurdering-2026.md
-│
-├── strategi/                            # [S] — HVA VI KAN OG VIL
-│   ├── INDEX.md
-│   ├── kapabiliteter/
-│   │   ├── kapabilitetskart.md
-│   │   ├── medikasjonshaandtering.md
-│   │   └── samtykkeforvaltning.md
-│   ├── verdistroemmer/
-│   │   └── pasientbehandling.md
-│   ├── ressurser/
-│   │   └── kompetanse-og-team.md
-│   └── handlingsplaner/
-│       └── modernisering-2026.md
-│
-├── forretning/                          # [F] — FORRETNINGSPROSESSER
-│   ├── INDEX.md
-│   ├── prosesser/
-│   │   ├── pasientsamtykke.md
-│   │   ├── medikasjonsrekvirering.md
-│   │   └── journaltilgang.md
-│   ├── roller/
-│   │   └── roller-og-ansvar.md
-│   ├── tjenester/
-│   │   └── tjenestekatalog.md
-│   ├── regelverk/
-│   │   ├── pasientjournalloven.md
-│   │   └── gdpr-krav.md
-│   └── kontrakter/
-│       └── databehandleravtaler.md
-│
-├── informasjon/                         # [I] — DATA OG BEGREPER
-│   ├── INDEX.md
-│   ├── begrepsmodell/
-│   │   ├── helsebegreper.md
-│   │   └── glossar.md
-│   ├── datamodeller/
-│   │   ├── pasient.md
-│   │   └── medikasjonsrekvirering.md
-│   ├── fhir/
-│   │   ├── types.ts
-│   │   ├── medication-request.ts
-│   │   ├── consent.ts
-│   │   ├── consent.md
-│   │   └── profiler/
-│   │       └── no-basis-patient.md
-│   ├── informasjonsflyt/
-│   │   └── samtykkeflyt.md
-│   └── klassifikasjoner/
-│       └── kodeverk-oversikt.md
-│
-├── applikasjon/                         # [A] — APPLIKASJONER OG API
-│   ├── INDEX.md
-│   ├── tjenester/
-│   │   ├── service-a.md
-│   │   └── service-b.md
-│   ├── api/
-│   │   ├── openapi-conventions.md
-│   │   └── fhir-api-profil.md
-│   ├── integrasjon/
-│   │   ├── event-driven.md
-│   │   └── synkront-oppslag.md
-│   └── events/
-│       ├── schemas.json
-│       └── catalog.md
-│
-├── teknologi/                           # [T] — PLATTFORM OG INFRASTRUKTUR
-│   ├── INDEX.md
-│   ├── plattform/
-│   │   ├── aidbox.md
-│   │   └── railway.md
-│   ├── infrastruktur/
-│   │   ├── deploy-strategi.md
-│   │   ├── ci-cd.md
-│   │   └── miljoer.md
-│   └── standarder/
-│       ├── typescript.md
-│       ├── python.md
-│       ├── testing.md
-│       ├── error-handling.md
-│       └── logging.md
-│
-├── fysisk/                              # [Fy] — HARDWARE OG ENHETER
-│   ├── INDEX.md
-│   ├── enheter/
-│   │   ├── esp32-plattform.md
-│   │   └── sensorer.md
-│   ├── nettverk/
-│   │   ├── kommunikasjonsprotokoll.md
-│   │   └── topologi.md
-│   └── utstyr/
-│       └── baat-elektronikk.md
-│
-├── sikkerhet/                           # [Sik] — TVERRGÅENDE SIKKERHET
-│   ├── INDEX.md
-│   ├── prinsipper/
-│   │   └── sikkerhetsprinsipper.md
-│   ├── autentisering/
-│   │   ├── autentiseringsmodell.md
-│   │   └── identitetsfoedering.md
-│   ├── autorisasjon/
-│   │   ├── tilgangskontrollmodell.md
-│   │   ├── security-labels.md
-│   │   └── break-the-glass.md
-│   ├── personvern/
-│   │   ├── personvernkonsekvenser.md
-│   │   ├── dataminimering.md
-│   │   └── samtykkehaandtering.md
-│   ├── kryptering/
-│   │   ├── krypteringspolicy.md
-│   │   └── noekkelhaandtering.md
-│   ├── revisjon/
-│   │   ├── audit-logging.md
-│   │   └── sporbarhet.md
-│   ├── saarbarhet/
-│   │   └── trussel-modell.md
-│   └── per-lag/
-│       ├── forretning-sikkerhet.md
-│       ├── informasjon-sikkerhet.md
-│       ├── applikasjon-sikkerhet.md
-│       ├── teknologi-sikkerhet.md
-│       └── fysisk-sikkerhet.md
-│
-├── impl-migrasjon/                      # [IM] — VEIKART OG MIGRERING
-│   ├── INDEX.md
-│   ├── veikart/
-│   │   └── arkitektur-veikart-2026.md
-│   ├── arbeidspakker/
-│   │   ├── wp-001-fhir-grunnlag.md
-│   │   └── wp-002-samtykkemodell.md
-│   ├── leveranser/
-│   │   └── leveranseoversikt.md
-│   ├── gap-analyse/
-│   │   └── gap-analyse-q2-2026.md
-│   └── migrasjonsplaner/
-│       └── migrasjon-monorepo-til-multirepo.md
-│
-├── adrs/
-│   ├── template.md
-│   ├── 0001-fhir-r4-som-basis.md              # [I]
-│   ├── 0002-aidbox-som-fhir-server.md          # [T]
-│   ├── 0003-esp32-kommunikasjonsprotokoll.md   # [Fy]
-│   ├── 0004-event-driven-integrasjon.md        # [A]
-│   ├── 0005-samtykkemodell-nektelse.md         # [F][I][Sik]
-│   └── 0006-zero-trust-prinsipp.md             # [Sik][M]
-│
-├── views/
-│   ├── oversikt.md
-│   ├── samtykke-vertikalt.md
-│   ├── medikasjons-vertikalt.md
-│   └── sikkerhet-horisontalt.md
+├── docs/
+│   └── arkitektur/
+│       ├── motivasjon/                  # [M] — HVORFOR
+│       ├── strategi/                    # [S] — HVA VI KAN OG VIL
+│       ├── forretning/                  # [F] — FORRETNINGSPROSESSER
+│       ├── informasjon/                 # [I] — DATA OG BEGREPER
+│       ├── applikasjon/                 # [A] — APPLIKASJONER OG API
+│       ├── teknologi/                   # [T] — PLATTFORM OG INFRASTRUKTUR
+│       ├── fysisk/                      # [Fy] — HARDWARE OG ENHETER
+│       ├── sikkerhet/                   # [Sik] — TVERRGÅENDE SIKKERHET
+│       ├── impl-migrasjon/              # [IM] — VEIKART OG MIGRERING
+│       ├── adrs/
+│       ├── views/
+│       └── registry/
 │
 ├── templates/
 │   ├── service/
@@ -428,11 +274,6 @@ myorg/arch/
 │   │   └── ci.yml.tmpl
 │   └── adr/
 │       └── template.md
-│
-├── registry/
-│   ├── services.yaml
-│   ├── dependencies.yaml
-│   └── agents.yaml
 │
 ├── scripts/
 │   ├── arch-read.sh                     # Konteksteffektiv leser
@@ -491,15 +332,15 @@ myorg/arch/
 
 Repoet følger ArchiMate 3.2 pluss Sikkerhet som tverrgående lag:
 
-    motivasjon/       [M]   — Hvorfor: Drivere, mål, prinsipper
-    strategi/         [S]   — Hva vi kan: Kapabiliteter, verdistrømmer
-    forretning/       [F]   — Hvem og hva: Prosesser, roller, regelverk
-    informasjon/      [I]   — Hvilke data: Modeller, begreper, FHIR
-    applikasjon/      [A]   — Hvilke systemer: API, integrasjon, events
-    teknologi/        [T]   — Hvilken plattform: Infra, deploy, standarder
-    fysisk/           [Fy]  — Hvilken hardware: ESP32, sensorer, nettverk
-    sikkerhet/        [Sik] — Tverrgående: AuthN, AuthZ, personvern
-    impl-migrasjon/   [IM]  — Når: Veikart, arbeidspakker, gap-analyse
+  docs/arkitektur/motivasjon/       [M]   — Hvorfor: Drivere, mål, prinsipper
+  docs/arkitektur/strategi/         [S]   — Hva vi kan: Kapabiliteter, verdistrømmer
+  docs/arkitektur/forretning/       [F]   — Hvem og hva: Prosesser, roller, regelverk
+  docs/arkitektur/informasjon/      [I]   — Hvilke data: Modeller, begreper, FHIR
+  docs/arkitektur/applikasjon/      [A]   — Hvilke systemer: API, integrasjon, events
+  docs/arkitektur/teknologi/        [T]   — Hvilken plattform: Infra, deploy, standarder
+  docs/arkitektur/fysisk/           [Fy]  — Hvilken hardware: ESP32, sensorer, nettverk
+  docs/arkitektur/sikkerhet/        [Sik] — Tverrgående: AuthN, AuthZ, personvern
+  docs/arkitektur/impl-migrasjon/   [IM]  — Når: Veikart, arbeidspakker, gap-analyse
 
 ## Verktøy
 
@@ -519,13 +360,13 @@ Bruk arch-read for konteksteffektiv lesing:
     arch-read --index informasjon
 
 **Nivå 2 — Agent-sammendrag** (~200 tokens per dokument)
-    arch-read informasjon/fhir/consent.md
+  arch-read docs/arkitektur/informasjon/fhir/consent.md
 
 **Nivå 3 — Implementasjonsdetaljer** (~500-1000 tokens)
-    arch-read informasjon/fhir/consent.md --løsning
+  arch-read docs/arkitektur/informasjon/fhir/consent.md --løsning
 
 **Nivå 4 — Full kontekst** (hele dokumentet)
-    arch-read informasjon/fhir/consent.md --full
+  arch-read docs/arkitektur/informasjon/fhir/consent.md --full
 
 **Søk** — Finn relevante dokumenter
     arch-read --search "MedicationRequest"
@@ -543,7 +384,7 @@ Teknologi → Fysisk
 
 Les **nedenfra og opp** for påvirkningsanalyse.
 
-Les **sikkerhet alltid** — sjekk sikkerhet/per-lag/<ditt-lag>.md.
+Les **sikkerhet alltid** — sjekk docs/arkitektur/sikkerhet/per-lag/<ditt-lag>.md.
 
 ### Minimum lesing per oppgavetype
 
@@ -654,7 +495,7 @@ Endringer som krysser lag eller repos:
 ## Hva agenter IKKE skal gjøre
 
 - Merge egne PRs
-- Endre AGENTS.md eller motivasjon/prinsipper/
+- Endre AGENTS.md eller docs/arkitektur/motivasjon/prinsipper/
 - Slette ADRs (de kan supersedes, aldri slettes)
 - Endre sikkerhetsarkitektur uten [Sik]-tag og dedikert review
 - Endre regelverk-tolkninger uten manuell review
@@ -868,8 +709,9 @@ labels: cross-repo
 ## 8. Sikkerhet som tverrgående lag
 
 Sikkerhet gjennomtrenger alle ArchiMate-lag. I stedet for å spre
-sikkerhetsdokumentasjon utover hvert lag, samler vi den i `sikkerhet/`
-med eksplisitte koblinger via `sikkerhet/per-lag/`.
+sikkerhetsdokumentasjon utover hvert lag, samler vi den i
+`docs/arkitektur/sikkerhet/` med eksplisitte koblinger via
+`docs/arkitektur/sikkerhet/per-lag/`.
 
 ### Per-lag sikkerhetsdokumenter
 
@@ -925,7 +767,7 @@ Views viser hvordan én funksjon realiseres gjennom alle lag.
 
 ## 10. Registry med lag-mapping
 
-### `registry/services.yaml`
+### `docs/arkitektur/registry/services.yaml`
 
 Registry skal være maskinlesbar kontrakt mellom arch-repo og tjenesterepoene.
 Derfor gjelder disse reglene:
@@ -1062,8 +904,8 @@ Den bør minimum håndheve dette:
    `deny` for klasse C, `ask` for klasse B, `allow` for klasse A.
 2. Ved `git push` fra arkitekturrepo:
    `deny` hvis lokal validering ikke er kjørt eller feiler.
-3. Ved edits i beskyttede områder som `motivasjon/prinsipper/` eller
-   `sikkerhet/`:
+3. Ved edits i beskyttede områder som `docs/arkitektur/motivasjon/prinsipper/`
+  eller `docs/arkitektur/sikkerhet/`:
    `ask` eller `deny` avhengig av endringsklasse og issue-referanse.
 4. Ved endring av delte kontrakter eller registry:
    krev lokal kjøring av dokument- og registry-sjekker før commit eller PR.
@@ -1076,10 +918,10 @@ Hooken skal kjøre bare når relevante filer er endret, for å holde flyten rask
 # .github/skills/arch-governance/scripts/post-tool-validate.sh
 changed_files=$(git diff --name-only --cached HEAD 2>/dev/null || git diff --name-only)
 
-echo "$changed_files" | grep -Eq '(^|/)(registry/|adrs/|.*\.md$)' || exit 0
+echo "$changed_files" | grep -Eq '(^|/)(docs/arkitektur/registry/|docs/arkitektur/adrs/|docs/arkitektur/.*\.md$)' || exit 0
 
 ./scripts/validate-docs.sh
-sh ./scripts/find-affected-services.sh --registry registry/services.yaml --validate-only
+sh ./scripts/find-affected-services.sh --registry docs/arkitektur/registry/services.yaml --validate-only
 ```
 
 ### Eksempel: policy-script for `PreToolUse`
@@ -1139,7 +981,7 @@ jobs:
             --paginate \
             --jq '.[].filename' > changed-files.txt
           sh scripts/find-affected-services.sh \
-            --registry registry/services.yaml \
+            --registry docs/arkitektur/registry/services.yaml \
             --changed-files changed-files.txt \
             --output affected-services.txt
           echo "repos<<EOF" >> $GITHUB_OUTPUT
@@ -1178,7 +1020,7 @@ jobs:
           ./scripts/validate-docs.sh
       - name: Sjekk ADR-format
         run: |
-          for adr in adrs/[0-9]*.md; do
+          for adr in docs/arkitektur/adrs/[0-9]*.md; do
             [ -f "$adr" ] || continue
             if ! grep -q "## Lag" "$adr"; then
               echo "::error::ADR mangler '## Lag'-seksjon: $adr"
@@ -1188,7 +1030,7 @@ jobs:
       - name: Valider registry-referanser
         run: |
           sh scripts/find-affected-services.sh \
-            --registry registry/services.yaml \
+            --registry docs/arkitektur/registry/services.yaml \
             --validate-only
 ```
 
@@ -1222,10 +1064,10 @@ Arkitekturen er organisert etter ArchiMate-lag.
     arch-read --index applikasjon
 
     # 2. Les relevante sammendrag (Nivå 2)
-    arch-read informasjon/fhir/consent.md
+    arch-read docs/arkitektur/informasjon/fhir/consent.md
 
     # 3. Sjekk sikkerhet
-    arch-read sikkerhet/per-lag/applikasjon-sikkerhet.md
+    arch-read docs/arkitektur/sikkerhet/per-lag/applikasjon-sikkerhet.md
 
 ### Når du trenger endringer i felles arkitektur
 
@@ -1263,17 +1105,17 @@ arch-read --index applikasjon
 # → Ser FHIR API-profil og event-katalog
 
 # ─── 3. Les sammendrag (Nivå 2) ──────────────────────────────
-arch-read informasjon/fhir/medication-request.md
+arch-read docs/arkitektur/informasjon/fhir/medication-request.md
 # → Viktigste regler, typer, API-referanse
 
-arch-read applikasjon/api/fhir-api-profil.md
+arch-read docs/arkitektur/applikasjon/api/fhir-api-profil.md
 # → HTTP-metoder, autentisering, validering
 
-arch-read sikkerhet/per-lag/applikasjon-sikkerhet.md
+arch-read docs/arkitektur/sikkerhet/per-lag/applikasjon-sikkerhet.md
 # → OAuth2, SMART on FHIR scopes, input-validering
 
 # ─── 4. Implementasjonsdetaljer (Nivå 3) ─────────────────────
-arch-read informasjon/fhir/medication-request.md --løsning
+arch-read docs/arkitektur/informasjon/fhir/medication-request.md --løsning
 # → TypeScript-type, JSON-eksempler, Aidbox-konfig, events
 
 # ─── 5. Implementer ──────────────────────────────────────────
