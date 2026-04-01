@@ -1,9 +1,9 @@
 # Policy Matrix
 
-Bruk denne matrisen når agenten vurderer commit, push og PR:
+Use this matrix when the agent is evaluating commit, push, and PR:
 
-- Klasse A: `allow` for direkte PR når lokal validering er grønn
-- Klasse B: `ask` før PR, og krev lokal validering
-- Klasse C: `deny` for direkte PR; opprett issue først
+- Class A: `allow` for direct PR when local validation passes
+- Class B: `ask` before PR, and require local validation
+- Class C: `deny` for direct PR; create issue first
 
-Beskyttede områder som `motivasjon/prinsipper/`, `strategi/`, `sikkerhet/` og veikart krever alltid strengere vurdering enn vanlig dokumentasjon.
+Protected areas such as `motivasjon/prinsipper/`, `strategi/`, `sikkerhet/`, and roadmaps always require stricter review than regular documentation.

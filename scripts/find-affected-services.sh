@@ -12,7 +12,7 @@ VALIDATE_ONLY=0
 
 usage() {
     cat <<EOF
-Bruk: find-affected-services.sh [--registry <fil>] [--changed-files <fil>] [--output <fil>] [--validate-only]
+Usage: find-affected-services.sh [--registry <file>] [--changed-files <file>] [--output <file>] [--validate-only]
 EOF
 }
 
@@ -78,7 +78,7 @@ validate_registry() {
     errors=0
 
     if [ -z "$rows" ]; then
-        echo "Registry ser tom ut: $REGISTRY" >&2
+        echo "Registry appears empty: $REGISTRY" >&2
         return 1
     fi
 
@@ -89,7 +89,7 @@ validate_registry() {
             motivasjon|strategi|forretning|informasjon|applikasjon|teknologi|fysisk|sikkerhet|impl-migrasjon)
                 ;;
             *)
-                echo "Ugyldig lag i registry: $layer ($service)" >&2
+                echo "Invalid layer in registry: $layer ($service)" >&2
                 errors=$((errors + 1))
                 continue
                 ;;
@@ -97,14 +97,14 @@ validate_registry() {
 
         case "$path" in
             ''|/*|*'..'*)
-                echo "Ugyldig sti i registry: $path ($service)" >&2
+                echo "Invalid path in registry: $path ($service)" >&2
                 errors=$((errors + 1))
                 continue
                 ;;
         esac
 
         if [ -d "$ROOT_DIR/$layer" ] && ! mapping_exists "$layer" "$path"; then
-            echo "Fant ikke mapping i repoet: $layer/$path ($service)" >&2
+            echo "Mapping not found in repo: $layer/$path ($service)" >&2
             errors=$((errors + 1))
         fi
     done <<EOF
@@ -171,7 +171,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ ! -f "$REGISTRY" ]; then
-    echo "Fant ikke registry: $REGISTRY" >&2
+    echo "Registry not found: $REGISTRY" >&2
     exit 1
 fi
 
@@ -181,7 +181,7 @@ if [ "$VALIDATE_ONLY" -eq 1 ]; then
 fi
 
 if [ -z "$CHANGED_FILES" ] || [ ! -f "$CHANGED_FILES" ]; then
-    echo "Du må angi --changed-files <fil>" >&2
+    echo "You must specify --changed-files <file>" >&2
     exit 1
 fi
 

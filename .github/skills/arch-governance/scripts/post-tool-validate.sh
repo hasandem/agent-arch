@@ -16,12 +16,12 @@ if ! printf '%s\n' "$files" | grep -Eq '^(motivasjon/|strategi/|forretning/|info
 fi
 
 if ! sh "$ROOT_DIR/scripts/validate-docs.sh"; then
-    emit_posttool_block "Dokumentkontrakt feilet"
+    emit_posttool_block "Document contract validation failed"
     exit 0
 fi
 
 if [ -f "$ROOT_DIR/registry/services.yaml" ] && ! sh "$ROOT_DIR/scripts/find-affected-services.sh" --registry "$ROOT_DIR/registry/services.yaml" --validate-only; then
-    emit_posttool_block "Registry-validering feilet"
+    emit_posttool_block "Registry validation failed"
     exit 0
 fi
 

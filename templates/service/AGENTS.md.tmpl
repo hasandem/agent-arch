@@ -1,0 +1,47 @@
+# Agent Rules for Service Repositories
+
+## Shared Architecture
+
+This service follows the shared arch method from the central architecture
+repository.
+
+Before architecture-sensitive implementation or review:
+
+- Use `arch-consume` to resolve architecture context and impact.
+- Read central architecture with `arch-read` before changing shared contracts,
+  APIs, FHIR models, or security-sensitive behavior.
+- Use `arch-escalate` if the needed change belongs in normative architecture
+  rather than this repository.
+- Use `arch-systematic-debugging` for bugs, failing tests, integration issues,
+  or unexpected behavior before proposing fixes.
+
+## Superpowers-Style Workflow
+
+If the team wants Superpowers-style process support in GitHub Copilot:
+
+- Prefer arch-compatible local skills and instructions over importing upstream
+  Superpowers behavior unchanged.
+- Treat upstream Superpowers as a source of workflow patterns, not as the
+  authority for policy or file locations.
+- Do not assume mandatory worktrees, mandatory TDD, or `docs/superpowers/`
+  paths unless the team explicitly chooses that.
+
+## Tooling
+
+```sh
+export ARCH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/myorg/arch"
+if [ ! -d "$ARCH_DIR/.git" ]; then
+    git clone --depth 1 https://github.com/myorg/arch.git "$ARCH_DIR"
+else
+    git -C "$ARCH_DIR" pull --ff-only
+fi
+export PATH="$PATH:$ARCH_DIR/scripts"
+```
+
+## Escalation Rules
+
+- Local implementation stays local when it does not change normative architecture.
+- Cross-repo dependencies should be made visible in the target repository with a
+  dedicated issue.
+- Missing or unclear central architecture should be escalated through
+  `arch-escalate`.

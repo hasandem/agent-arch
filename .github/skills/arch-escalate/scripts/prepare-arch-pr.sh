@@ -34,14 +34,14 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         *)
-            echo "Ukjent argument: $1" >&2
+            echo "Unknown argument: $1" >&2
             exit 1
             ;;
     esac
 done
 
 if [ "$change_class" = "C" ]; then
-    echo "Klasse C-endring skal ikke gå direkte til PR. Opprett issue først." >&2
+    echo "Class C change should not go directly to PR. Create an issue first." >&2
     exit 1
 fi
 
@@ -51,7 +51,7 @@ command=$(cat <<EOF
 git checkout -b "$branch"
 gh pr create \
   --repo myorg/arch \
-  --title "[$layer] ${title:-Forslag fra $repo_name}" \
+  --title "[$layer] ${title:-Proposal from $repo_name}" \
   --label "arch-proposal,auto-agent,lag-$layer"
 EOF
 )

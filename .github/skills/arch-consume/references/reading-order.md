@@ -1,9 +1,9 @@
 # Reading Order
 
-Bruk sentral arkitektur i denne rekkefølgen når oppgaven er uklar eller har arkitekturpåvirkning:
+Use central architecture in this order when the task is unclear or has architectural impact:
 
-1. Start med relevant `INDEX.md` for orientering.
-2. Les `Agent-sammendrag` i relevante dokumenter.
-3. Les alltid sikkerhetsdokumenter for berørt lag.
-4. Gå til `Løsningsarkitektur` før du gjør kodeendringer.
-5. Gå til `Målarkitektur` bare når du vurderer endring i normativ arkitektur.
+1. Start with the relevant `INDEX.md` for orientation.
+2. Read the `Agent summary` in relevant documents.
+3. Always read security documents for the affected layer.
+4. Go to `Solution Architecture` before making code changes.
+5. Go to `Target Architecture` only when considering changes to normative architecture.

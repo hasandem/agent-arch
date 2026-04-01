@@ -51,11 +51,11 @@ session_start() {
     arch_dir=$(default_arch_dir)
 
     if [ -d "$arch_dir" ]; then
-        emit_system_message "ARCH_DIR er tilgjengelig: $arch_dir"
+        emit_system_message "ARCH_DIR is available: $arch_dir"
         return 0
     fi
 
-    emit_system_message "ARCH_DIR finnes ikke lokalt ennå. Klon myorg/arch til $arch_dir ved arkitekturrelevante oppgaver."
+    emit_system_message "ARCH_DIR does not exist locally yet. Clone myorg/arch to $arch_dir for architecture-relevant tasks."
 }
 
 pre_tool() {
@@ -67,11 +67,11 @@ pre_tool() {
     if printf '%s' "$compact_payload" | grep -Fq 'gh pr create' && printf '%s' "$compact_payload" | grep -Fq 'myorg/arch'; then
         case "$change_class" in
             C)
-                emit_pretool_decision "deny" "Klasse C-endring krever issue og koordinering før PR"
+                emit_pretool_decision "deny" "Class C change requires issue and coordination before PR"
                 return 0
                 ;;
             B)
-                emit_pretool_decision "ask" "Klasse B-endring krever eksplisitt vurdering før PR"
+                emit_pretool_decision "ask" "Class B change requires explicit review before PR"
                 return 0
                 ;;
         esac
@@ -79,22 +79,22 @@ pre_tool() {
 
     if printf '%s' "$compact_payload" | grep -Fq 'git push'; then
         if ! validate_local >/dev/null 2>&1; then
-            emit_pretool_decision "deny" "Lokal validering må bestå før push"
+            emit_pretool_decision "deny" "Local validation must pass before push"
             return 0
         fi
     fi
 
     if has_protected_changes && ! has_issue_reference "$compact_payload"; then
-        emit_pretool_decision "ask" "Endringer i beskyttede områder bør ha issue-referanse"
+        emit_pretool_decision "ask" "Changes to protected areas should have an issue reference"
         return 0
     fi
 
-    emit_pretool_decision "allow" "Ingen policy-blokkering"
+    emit_pretool_decision "allow" "No policy blocking"
 }
 
 usage() {
     cat <<EOF
-Bruk: arch-policy.sh <session-start|classify-change|pre-tool|validate-local>
+Usage: arch-policy.sh <session-start|classify-change|pre-tool|validate-local>
 EOF
 }
 

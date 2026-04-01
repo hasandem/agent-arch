@@ -6,7 +6,7 @@ ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/../../../.." && pwd)
 
 repo_name=$(current_repo_name)
 layer="I"
-title="Trenger avklaring"
+title="Needs clarification"
 body=""
 execute=0
 
@@ -33,7 +33,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         *)
-            echo "Ukjent argument: $1" >&2
+            echo "Unknown argument: $1" >&2
             exit 1
             ;;
     esac

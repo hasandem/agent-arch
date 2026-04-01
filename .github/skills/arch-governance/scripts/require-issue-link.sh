@@ -16,5 +16,5 @@ if has_issue_reference "$input_text"; then
     exit 0
 fi
 
-echo "Fant ingen issue-referanse i input, branch-navn eller kontekst." >&2
+echo "No issue reference found in input, branch name, or context." >&2
 exit 1

@@ -63,7 +63,7 @@ validate_file() {
             exit error
         }
     ' "$file"; then
-        echo "Ugyldig dokumentkontrakt: $file" >&2
+        echo "Invalid document contract: $file" >&2
         errors=$((errors + 1))
     fi
 }
