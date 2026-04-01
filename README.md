@@ -1,5 +1,9 @@
 # Arch-Repo — AI-driven architecture that actually gets used
 
+> This repository is an active experiment. There is no guarantee this approach
+> will succeed, and it is being tested in real workflows right now. Expect the
+> method, guidance, and tooling to evolve as we learn from that use.
+
 ## The problem we're solving
 
 Most teams have architecture documentation. It gets written once, put in a wiki,
