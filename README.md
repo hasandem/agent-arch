@@ -57,6 +57,11 @@ In practice, that means three things:
 The point is that the architecture improves the more it's used, because agents
 both consume and contribute to it as part of normal development.
 
+For solution repositories, this method is now distributed through a controlled
+installation surface rather than ad hoc copying. A consumer repository installs
+the exact approved local method files from this repository and then works only
+against that installed surface plus the central architecture clone.
+
 ## How it works in practice
 
 An agent implementing a feature typically does this:
@@ -71,6 +76,42 @@ An agent implementing a feature typically does this:
 
 Everything is traceable. Agents don't commit architecture changes silently.
 
+## How Solution Repos Adopt The Method
+
+Use the installer script to copy the exact approved method surface into the
+solution repository.
+
+At the moment there is one normative solution-repository profile:
+
+- `solution-standard`
+
+That profile installs the expected local instructions, skills, templates, and
+supporting scripts for a normal consumer repository. Consumer repositories
+should not pick files manually from this repository and should not vendor the
+entire repository into their own tree.
+
+Typical bootstrap flow in a solution repository:
+
+```sh
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+
+export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
+. .github/agent-arch/source.env
+if [ ! -d "$ARCH_DIR/.git" ]; then
+   git clone --depth 1 "https://github.com/$AGENT_ARCH_SOURCE_REPO.git" "$ARCH_DIR"
+else
+   git -C "$ARCH_DIR" pull --ff-only
+fi
+export PATH="$PATH:$PWD/scripts"
+```
+
+The installed manifest in `.github/agent-arch/solution-standard.manifest`
+defines the approved local method surface. If a consumer repository needs a new
+method file, change the profile here in `agent-arch` rather than copying extra
+files manually downstream.
+
 ## What's in this repo
 
 Architecture documents are organized by ArchiMate layers under `docs/arkitektur/`:
@@ -81,6 +122,7 @@ with an agent summary, solution architecture, and target architecture.
 The repo also contains:
 
 - **scripts/** — tools for reading, validation, and policy enforcement
+- **install/profiles/** — controlled install manifests for consumer repositories
 - **templates/** — reusable templates for service repos
 - **.github/skills/** — Copilot skills that govern agent workflows
 - **.github/hooks/** — hooks that stop risky actions before they happen
@@ -101,6 +143,10 @@ in repo A.
 **Method before domain.** This repo describes the workflow and governance
 mechanisms. They can be reused across projects and domains. Domain examples
 are illustrations, not the main purpose.
+
+**Install a controlled local method surface.** Solution repositories should use
+`agent-arch-install` with `solution-standard`, then rely on the installed files
+instead of manually selecting files from the central repository.
 
 ## What this is not
 
@@ -129,6 +175,7 @@ are illustrations, not the main purpose.
 
 - [LICENSE](LICENSE) — MIT license for this repository
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) — attribution and license notice for upstream material such as `obra/superpowers`
-- `scripts/` — tools for reading (`arch-read`), validation, and policy
+- `scripts/` — tools for reading (`arch-read`), installation, validation, and policy
+- `install/profiles/solution-standard.manifest` — the only current normative install profile for solution repositories
 - `templates/` — templates for use in service repos
-- `.github/skills/` — Copilot skills for `arch-consume`, `arch-escalate`, `arch-governance`, and arch-compatible Superpowers wrappers such as brainstorming, planning, review, and debugging
+- `.github/skills/` — Copilot skills for `agent-arch-install`, `arch-consume`, `arch-escalate`, `arch-governance`, and arch-compatible Superpowers wrappers such as brainstorming, planning, review, and debugging

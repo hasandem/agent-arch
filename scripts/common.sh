@@ -5,6 +5,32 @@ repo_root() {
     git rev-parse --show-toplevel 2>/dev/null || pwd
 }
 
+agent_arch_metadata_file() {
+    printf '%s\n' "$(repo_root)/.github/agent-arch/source.env"
+}
+
+configured_arch_repo() {
+    metadata_file=$(agent_arch_metadata_file)
+
+    if [ -f "$metadata_file" ]; then
+        # shellcheck disable=SC1090
+        . "$metadata_file"
+    fi
+
+    printf '%s\n' "${ARCH_REPO:-${AGENT_ARCH_SOURCE_REPO:-myorg/arch}}"
+}
+
+configured_arch_ref() {
+    metadata_file=$(agent_arch_metadata_file)
+
+    if [ -f "$metadata_file" ]; then
+        # shellcheck disable=SC1090
+        . "$metadata_file"
+    fi
+
+    printf '%s\n' "${ARCH_REF:-${AGENT_ARCH_SOURCE_REF:-main}}"
+}
+
 sanitize_python_env() {
     unset VIRTUAL_ENV CONDA_PREFIX CONDA_DEFAULT_ENV PYTHONPATH PYTHONHOME PIP_REQUIRE_VIRTUALENV
 }

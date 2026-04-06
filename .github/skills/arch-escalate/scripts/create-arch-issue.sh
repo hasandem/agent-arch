@@ -5,6 +5,7 @@ ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/../../../.." && pwd)
 . "$ROOT_DIR/scripts/common.sh"
 
 repo_name=$(current_repo_name)
+arch_repo=$(configured_arch_repo)
 layer="I"
 title="Needs clarification"
 body=""
@@ -41,7 +42,7 @@ done
 
 command=$(cat <<EOF
 gh issue create \
-  --repo myorg/arch \
+    --repo $arch_repo \
   --template arch-request.md \
   --title "[$layer] $title" \
   --label "arch-request,auto-agent" \

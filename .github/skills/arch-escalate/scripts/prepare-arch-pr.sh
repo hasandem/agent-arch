@@ -5,6 +5,7 @@ ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/../../../.." && pwd)
 . "$ROOT_DIR/scripts/common.sh"
 
 repo_name=$(current_repo_name)
+arch_repo=$(configured_arch_repo)
 layer="informasjon"
 title=""
 scope=""
@@ -50,7 +51,7 @@ branch="agent/${repo_name}/${layer}/${scope:-proposal}"
 command=$(cat <<EOF
 git checkout -b "$branch"
 gh pr create \
-  --repo myorg/arch \
+    --repo $arch_repo \
   --title "[$layer] ${title:-Proposal from $repo_name}" \
   --label "arch-proposal,auto-agent,lag-$layer"
 EOF

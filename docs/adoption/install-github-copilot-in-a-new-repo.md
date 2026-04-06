@@ -15,6 +15,8 @@ Use project-local installation.
 That means storing instructions and skills inside the new repository so they are
 versioned, reviewed, and shared with the team.
 
+For solution repositories, use the `solution-standard` install profile rather than copying files manually.
+
 ## Project-local installation
 
 ### 1. Add workspace instructions
@@ -29,10 +31,26 @@ central architecture repository.
 For a solution repository, prefer a narrower instruction file that points to the
 central architecture repo and local repo conventions.
 
-### 2. Add the skills that match the repo role
+When using the controlled install flow, this file is installed by the profile.
+
+### 2. Install the normative profile for the repo role
+
+For a solution repository, bootstrap the installer and apply `solution-standard`:
+
+```sh
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+```
+
+This installs only the files listed in `.github/agent-arch/solution-standard.manifest`.
+It also writes `.github/agent-arch/source.env` so local scripts can resolve the right central repository and ref.
+
+### 3. Add the skills that match the repo role
 
 For a solution repository, typically add:
 
+- `.github/skills/agent-arch-install/`
 - `.github/skills/arch-intake/` when the repo needs intake or alignment support
 - `.github/skills/arch-consume/`
 - `.github/skills/arch-escalate/`
@@ -43,7 +61,7 @@ For a central architecture repository, typically add:
 - `.github/skills/arch-governance/`
 - plus any other local workflow wrappers you want available by default
 
-### 3. Add hooks when the repo needs enforcement
+### 4. Add hooks when the repo needs enforcement
 
 Create:
 
@@ -52,16 +70,18 @@ Create:
 Only do this when the repository should enforce deterministic governance
 behavior, not just offer guidance.
 
-### 4. Add supporting scripts if hooks or skills depend on them
+### 5. Add supporting scripts if hooks or skills depend on them
 
 Typical examples:
 
+- `scripts/agent-arch-install.sh`
 - `scripts/arch-policy.sh`
-- `scripts/validate-docs.sh`
-- `scripts/find-affected-services.sh`
+- `scripts/common.sh`
 - `scripts/arch-read.sh`
 
-### 5. Restart the Copilot session
+For a solution repository, prefer the exact script set from `solution-standard` instead of selecting scripts manually.
+
+### 6. Restart the Copilot session
 
 Open a new Copilot chat session after the files are added so the new workspace
 customizations are loaded.
@@ -95,11 +115,11 @@ should live in the repository.
 
 Install:
 
-- service instructions
-- `arch-intake` when the repository must first be understood or aligned
-- `arch-consume`
-- `arch-escalate`
-- optional local workflow wrappers
+- the `solution-standard` install profile, which is the only current normative solution profile
+- service instructions from that profile
+- `agent-arch-install`
+- `arch-intake`, `arch-consume`, and `arch-escalate`
+- optional local workflow wrappers that are explicitly added to `solution-standard`
 
 Do not install central-governance hooks and scripts by default.
 
@@ -118,8 +138,10 @@ Install:
 
 1. Confirm the skill folders exist under `.github/skills/`.
 2. Confirm each skill has a valid `SKILL.md` with matching `name` and folder name.
-3. Start a fresh Copilot session after adding the files.
-4. Check that the workspace instruction file is present and does not conflict with another instruction file.
+3. Confirm `.github/agent-arch/solution-standard.manifest` exists for controlled solution installs.
+4. Confirm `.github/agent-arch/source.env` points at the intended public agent-arch repository.
+5. Start a fresh Copilot session after adding the files.
+6. Check that the workspace instruction file is present and does not conflict with another instruction file.
 
 ### Hooks are not behaving as expected
 

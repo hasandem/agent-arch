@@ -1,0 +1,22 @@
+# source|target|mode
+templates/service/AGENTS.md.tmpl|.github/copilot-instructions.md|0644
+.github/skills/agent-arch-install/SKILL.md|.github/skills/agent-arch-install/SKILL.md|0644
+.github/skills/arch-intake/SKILL.md|.github/skills/arch-intake/SKILL.md|0644
+.github/skills/arch-consume/SKILL.md|.github/skills/arch-consume/SKILL.md|0644
+.github/skills/arch-consume/scripts/classify-impact.sh|.github/skills/arch-consume/scripts/classify-impact.sh|0755
+.github/skills/arch-consume/scripts/resolve-context.sh|.github/skills/arch-consume/scripts/resolve-context.sh|0755
+.github/skills/arch-consume/references/reading-order.md|.github/skills/arch-consume/references/reading-order.md|0644
+.github/skills/arch-escalate/SKILL.md|.github/skills/arch-escalate/SKILL.md|0644
+.github/skills/arch-escalate/scripts/create-arch-issue.sh|.github/skills/arch-escalate/scripts/create-arch-issue.sh|0755
+.github/skills/arch-escalate/scripts/prepare-arch-pr.sh|.github/skills/arch-escalate/scripts/prepare-arch-pr.sh|0755
+.github/skills/arch-escalate/references/change-classes.md|.github/skills/arch-escalate/references/change-classes.md|0644
+.github/skills/arch-systematic-debugging/SKILL.md|.github/skills/arch-systematic-debugging/SKILL.md|0644
+templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl|.github/ISSUE_TEMPLATE/upstream-dependency.md|0644
+templates/service/intake-brief.md.tmpl|docs/intake/intake-brief.md|0644
+templates/service/solution-space-record.md.tmpl|docs/solution-space/solution-space-record.md|0644
+arch-read.sh|arch-read.sh|0755
+scripts/arch-read.sh|scripts/arch-read.sh|0755
+scripts/arch-policy.sh|scripts/arch-policy.sh|0755
+scripts/common.sh|scripts/common.sh|0644
+scripts/agent-arch-install.sh|scripts/agent-arch-install.sh|0755
+install/profiles/solution-standard.manifest|.github/agent-arch/solution-standard.manifest|0644

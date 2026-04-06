@@ -9,14 +9,16 @@ The goal is to make architecture reading, escalation, and cross-repo
 coordination explicit without turning the solution repository into a second
 governance repository.
 
+Use the controlled installation profile `solution-standard` for the local method
+surface. Do not pick files manually from the central repository.
+
 ## What to bring in
 
 Add these parts first:
 
-- `arch-intake` when the repo needs alignment or discovery before implementation
-- `arch-consume`
-- `arch-escalate`
-- service-level agent instructions
+- the approved `solution-standard` install profile for solution repositories
+- service-level agent instructions from that profile
+- the skills and support files listed in the installed manifest
 - cross-repo dependency issue templates when relevant
 
 Do not copy central-governance hooks and policy scripts unless the solution
@@ -25,23 +27,27 @@ repository is also intended to become a normative repository.
 ## Minimum setup
 
 1. Add repository instructions.
-   - Start from [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl).
-2. Make `arch-read` available from the central architecture repository.
-3. Add intake and solution-space templates if the repo will align existing solutions or learn from pilots.
-4. Ensure agents can use `arch-consume` before architecture-sensitive work.
-5. Ensure agents can use `arch-escalate` when local work uncovers a gap in shared architecture.
-6. Add target-repo issue templates if repo-to-repo dependencies are common.
+   - Install `solution-standard` instead of copying files manually.
+2. Keep `ARCH_DIR` pointed at a local clone of the central architecture repository.
+3. Let the installer write `.github/agent-arch/source.env` so local scripts know which central repository they belong to.
+4. Ensure the installed profile puts local method scripts on `PATH`.
+5. Add target-repo issue templates if repo-to-repo dependencies are common.
 
 ## Setup snippet
 
 ```sh
-export ARCH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/myorg/arch"
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+
+export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
+. .github/agent-arch/source.env
 if [ ! -d "$ARCH_DIR/.git" ]; then
-    git clone --depth 1 https://github.com/myorg/arch.git "$ARCH_DIR"
+   git clone --depth 1 "https://github.com/$AGENT_ARCH_SOURCE_REPO.git" "$ARCH_DIR"
 else
-    git -C "$ARCH_DIR" pull --ff-only
+   git -C "$ARCH_DIR" pull --ff-only
 fi
-export PATH="$PATH:$ARCH_DIR/scripts"
+export PATH="$PATH:$PWD/scripts"
 ```
 
 ## Working rules
@@ -51,22 +57,26 @@ export PATH="$PATH:$ARCH_DIR/scripts"
 3. Keep local changes local when normative architecture does not need to change.
 4. If repo A depends on repo B, create an issue in repo B where the change must happen.
 5. If the real problem is a missing or unclear shared standard, escalate through `arch-escalate`.
-6. Keep validation commands explicit and runnable in the repository.
+6. Treat the installed manifest as the approved local method surface.
+7. Keep validation commands explicit and runnable in the repository.
 
 ## Verification checklist
 
 Before calling the method adopted in a solution repository, verify:
 
 1. The agent can resolve and read central architecture.
-2. `arch-intake` is available if the repository will align existing solutions or evaluate pilots.
-3. `arch-consume` is discoverable and usable.
-4. `arch-escalate` is discoverable and usable.
-5. Cross-repo dependency handling is explicit.
-6. The repository has service-level instructions that point to the method.
+2. `.github/agent-arch/solution-standard.manifest` exists and matches the only current normative solution profile.
+3. `.github/agent-arch/source.env` points to the intended central repository and ref.
+4. `arch-intake` is available if the repository will align existing solutions or evaluate pilots.
+5. `arch-consume` is discoverable and usable.
+6. `arch-escalate` is discoverable and usable.
+7. Cross-repo dependency handling is explicit.
+8. The repository has service-level instructions that point to the method.
 
 ## Avoid these mistakes
 
 - Copying central-governance automation into every solution repo
+- Copying method files manually instead of using `solution-standard`
 - Skipping intake even though the repository first needs alignment or discovery
 - Treating shared architecture as optional reading
 - Hiding dependencies in comments instead of target-repo issues

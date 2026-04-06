@@ -15,24 +15,24 @@ Do not copy everything by default.
 Use the minimum starter set that gives the target repository the right agent
 behavior, templates, and validation hooks for its role.
 
+For solution repositories, use `solution-standard` rather than selecting files manually.
+
 ## Starter assets for a solution repository
 
 These are the usual starting assets for a normal service or application repo.
 
 ### Copy directly
 
-- [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl)
-- [templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl](../../templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl)
-- [templates/service/intake-brief.md.tmpl](../../templates/service/intake-brief.md.tmpl) when intake work is needed
-- [templates/service/solution-space-record.md.tmpl](../../templates/service/solution-space-record.md.tmpl) when the repo should document alternatives and chosen solutions
+- Prefer installing [install/profiles/solution-standard.manifest](../../install/profiles/solution-standard.manifest) through `scripts/agent-arch-install.sh`; it is the only current normative solution profile
 
 ### Add or reference from the central architecture repo
 
+- `agent-arch-install`
 - `arch-intake` when the repo needs discovery or alignment before implementation
 - `arch-consume`
 - `arch-escalate`
 - `arch-systematic-debugging` when debugging guidance is wanted locally
-- `arch-read` from the central architecture repository
+- `arch-read` with `ARCH_DIR` pointed at a local clone of the central architecture repository
 
 ### Usually do not copy
 
@@ -40,6 +40,7 @@ These are the usual starting assets for a normal service or application repo.
 - central-repo policy scripts
 - central-repo CI validation rules
 - governance-only templates that are specific to normative architecture
+- files outside the `solution-standard` manifest
 
 ## Starter assets for a central architecture repository
 
@@ -87,6 +88,8 @@ and governance boundaries.
 ## Practical rule
 
 If the target repo consumes architecture, copy the consumer assets.
+
+In practice, install `solution-standard` and treat its manifest plus `.github/agent-arch/source.env` as the local contract.
 
 If the target repo defines normative architecture, copy the governance assets.
 

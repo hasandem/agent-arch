@@ -11,25 +11,49 @@ Set up a new solution repository so agents can:
 
 This quickstart is the minimum practical setup.
 
+Use the `solution-standard` installation profile instead of copying files one by one.
+
 ## Resulting file layout
 
 ```text
 your-solution-repo/
 ├── .github/
 │   ├── copilot-instructions.md
+│   ├── agent-arch/
+│   │   ├── source.env
+│   │   └── solution-standard.manifest
 │   ├── skills/
+│   │   ├── agent-arch-install/
 │   │   ├── arch-intake/
 │   │   ├── arch-consume/
 │   │   ├── arch-escalate/
-│   │   └── arch-systematic-debugging/   # optional
+│   │   └── arch-systematic-debugging/
 │   └── ISSUE_TEMPLATE/
 │       └── upstream-dependency.md
 ├── docs/
+│   ├── intake/
+│   │   └── intake-brief.md
 │   └── solution-space/
-└── AGENTS.md                            # or use only .github/copilot-instructions.md if preferred
+│       └── solution-space-record.md
+├── arch-read.sh
+└── scripts/
+    ├── agent-arch-install.sh
+    ├── arch-policy.sh
+    ├── arch-read.sh
+    └── common.sh
 ```
 
-## Step 1: Add repository instructions
+## Step 1: Install `solution-standard`
+
+```sh
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+```
+
+This installs the only current normative local method surface for solution repositories, listed in `.github/agent-arch/solution-standard.manifest`.
+
+## Step 2: Add repository instructions
 
 Create one repository-level instruction entry point.
 
@@ -44,63 +68,28 @@ Use the service template as your starting point:
 
 - [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl)
 
-## Step 2: Add the core skills
-
-Copy these skill folders into the new repository under `.github/skills/`:
-
-- `.github/skills/arch-intake/` when the repository needs intake or alignment work
-- `.github/skills/arch-consume/`
-- `.github/skills/arch-escalate/`
-
-Optional but recommended:
-
-- `.github/skills/arch-systematic-debugging/`
-
-Only add planning, review, or brainstorming wrappers if the team wants that
-workflow available locally.
-
-## Step 3: Add intake and solution-space templates
-
-Copy when the repository needs to align an existing solution, assess a pilot, or
-document alternatives for reuse:
-
-- [templates/service/intake-brief.md.tmpl](../../templates/service/intake-brief.md.tmpl)
-- [templates/service/solution-space-record.md.tmpl](../../templates/service/solution-space-record.md.tmpl)
-
-Suggested target locations:
-
-- `docs/intake/intake-brief.md`
-- `docs/solution-space/<topic>.md`
-
-## Step 4: Add cross-repo dependency issue template
-
-Copy:
-
-- [templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl](../../templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl)
-
-Rename it in the target repo to:
-
-- `.github/ISSUE_TEMPLATE/upstream-dependency.md`
-
-## Step 5: Make `arch-read` available
+## Step 3: Point local tooling at central architecture
 
 Add this setup snippet to your repo instructions or bootstrap docs:
 
 ```sh
-export ARCH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/myorg/arch"
+export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
+. .github/agent-arch/source.env
 if [ ! -d "$ARCH_DIR/.git" ]; then
-    git clone --depth 1 https://github.com/myorg/arch.git "$ARCH_DIR"
+    git clone --depth 1 "https://github.com/$AGENT_ARCH_SOURCE_REPO.git" "$ARCH_DIR"
 else
     git -C "$ARCH_DIR" pull --ff-only
 fi
-export PATH="$PATH:$ARCH_DIR/scripts"
+export PATH="$PATH:$PWD/scripts"
 ```
 
-## Step 6: Start a fresh Copilot session
+The installed local `arch-read` wrapper uses `ARCH_DIR` to read the central architecture clone.
+
+## Step 4: Start a fresh Copilot session
 
 After adding the files, start a new Copilot chat session in the repository.
 
-## Step 7: Verify the setup
+## Step 5: Verify the setup
 
 Ask the agent something that should trigger the installed skills.
 
@@ -112,6 +101,7 @@ Examples:
 
 Expected behavior:
 
+- `agent-arch-install` is available for controlled upgrades of the local method surface
 - the agent uses `arch-intake` when the repository first needs to be understood
 - the agent uses `arch-consume` before architecture-sensitive implementation
 - the agent uses `arch-escalate` when shared architecture must change
@@ -120,10 +110,9 @@ Expected behavior:
 ## Common mistakes
 
 - Installing central-governance hooks in a normal solution repo
-- Forgetting to make `arch-read` available
-- Forgetting to add intake templates even though the repo needs alignment work
-- Copying every wrapper skill before the team actually needs them
-- Omitting the upstream dependency issue template even though the repo depends on other repos often
+- Copying method files manually instead of using `solution-standard`
+- Forgetting to point `ARCH_DIR` at a local clone of the central architecture repo
+- Editing centrally managed method files locally without first changing the central profile
 
 ## After quickstart
 

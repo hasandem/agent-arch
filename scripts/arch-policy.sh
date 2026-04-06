@@ -49,13 +49,14 @@ validate_local() {
 session_start() {
     sanitize_python_env
     arch_dir=$(default_arch_dir)
+    arch_repo=$(configured_arch_repo)
 
     if [ -d "$arch_dir" ]; then
         emit_system_message "ARCH_DIR is available: $arch_dir"
         return 0
     fi
 
-    emit_system_message "ARCH_DIR does not exist locally yet. Clone myorg/arch to $arch_dir for architecture-relevant tasks."
+    emit_system_message "ARCH_DIR does not exist locally yet. Clone $arch_repo to $arch_dir for architecture-relevant tasks."
 }
 
 pre_tool() {
