@@ -1,6 +1,7 @@
 ---
 name: agent-arch-install
 description: 'Use when installing or updating the controlled agent-arch method surface in a solution repository. Applies a named profile from the public agent-arch repository instead of copying files manually.'
+argument-hint: '<owner>/agent-arch [ref]'
 ---
 
 # Agent Arch Install
@@ -14,11 +15,12 @@ description: 'Use when installing or updating the controlled agent-arch method s
 ## Procedure
 
 1. Use the approved profile `solution-standard`. No other solution-repository profile is normative at this time.
-2. Run `scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard` in the target repository.
-3. Review the installed manifest at `.github/agent-arch/solution-standard.manifest`.
-4. Treat files listed in that manifest as centrally managed method files.
-5. Do not copy additional method files manually into the solution repository.
-6. If `solution-standard` is missing something, change that profile in the central `agent-arch` repository instead of patching the consumer repository ad hoc.
+2. If this skill was installed via `npx skills`, run [install-method.sh](./install-method.sh) with `--repo <owner>/agent-arch` so the full local method surface is materialized into the repository.
+3. The bootstrap script downloads `scripts/agent-arch-install.sh` into the target repository and runs it with `--profile solution-standard`.
+4. Review the installed manifest at `.github/agent-arch/solution-standard.manifest`.
+5. Treat files listed in that manifest as centrally managed method files.
+6. Do not copy additional method files manually into the solution repository.
+7. If `solution-standard` is missing something, change that profile in the central `agent-arch` repository instead of patching the consumer repository ad hoc.
 
 ## Output Expectations
 

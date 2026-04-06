@@ -36,9 +36,8 @@ repository is also intended to become a normative repository.
 ## Setup snippet
 
 ```sh
-mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 
 export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
 . .github/agent-arch/source.env
@@ -49,6 +48,16 @@ else
 fi
 export PATH="$PATH:$PWD/scripts"
 ```
+
+Fallback when `npx skills` is unavailable:
+
+```sh
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+```
+
+With the `npx skills` bootstrap path, the shared bootstrap skill is installed in `.agents/skills/agent-arch-install/` for GitHub Copilot before it materializes the normative local method surface into the repository itself.
 
 ## Working rules
 

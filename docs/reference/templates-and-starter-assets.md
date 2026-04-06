@@ -23,7 +23,7 @@ These are the usual starting assets for a normal service or application repo.
 
 ### Copy directly
 
-- Prefer installing [install/profiles/solution-standard.manifest](../../install/profiles/solution-standard.manifest) through `scripts/agent-arch-install.sh`; it is the only current normative solution profile
+- Prefer bootstrapping with `npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy`, then materialize [install/profiles/solution-standard.manifest](../../install/profiles/solution-standard.manifest) through `.agents/skills/agent-arch-install/install-method.sh`; it is the only current normative solution profile
 
 ### Add or reference from the central architecture repo
 

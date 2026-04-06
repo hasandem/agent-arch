@@ -47,6 +47,13 @@ export PATH="$PATH:$PWD/scripts"
 Install the approved local method surface with:
 
 ```sh
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
+```
+
+Fallback when `npx skills` is unavailable:
+
+```sh
 mkdir -p scripts
 curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
 sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard

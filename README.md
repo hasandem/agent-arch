@@ -78,8 +78,8 @@ Everything is traceable. Agents don't commit architecture changes silently.
 
 ## How Solution Repos Adopt The Method
 
-Use the installer script to copy the exact approved method surface into the
-solution repository.
+Use `npx skills` to install the bootstrap skill, then let that bootstrap skill
+materialize the exact approved method surface into the solution repository.
 
 At the moment there is one normative solution-repository profile:
 
@@ -93,9 +93,8 @@ entire repository into their own tree.
 Typical bootstrap flow in a solution repository:
 
 ```sh
-mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 
 export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
 . .github/agent-arch/source.env
@@ -111,6 +110,15 @@ The installed manifest in `.github/agent-arch/solution-standard.manifest`
 defines the approved local method surface. If a consumer repository needs a new
 method file, change the profile here in `agent-arch` rather than copying extra
 files manually downstream.
+
+The shell installer remains a supported fallback when `npx skills` is not
+available, but the intended bootstrap path is now the shared skill.
+
+When bootstrapped through `npx skills`, the shared bootstrap skill is installed
+in `.agents/skills/agent-arch-install/` for GitHub Copilot. Running its
+`install-method.sh` script then materializes the normative repository-local
+method surface under `.github/`, `scripts/`, and the other paths listed in the
+installed manifest.
 
 ## What's in this repo
 

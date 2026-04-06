@@ -38,13 +38,21 @@ When using the controlled install flow, this file is installed by the profile.
 For a solution repository, bootstrap the installer and apply `solution-standard`:
 
 ```sh
-mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
 This installs only the files listed in `.github/agent-arch/solution-standard.manifest`.
 It also writes `.github/agent-arch/source.env` so local scripts can resolve the right central repository and ref.
+The shared bootstrap skill itself is installed into `.agents/skills/agent-arch-install/` for GitHub Copilot.
+
+Fallback when `npx skills` is unavailable:
+
+```sh
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+```
 
 ### 3. Add the skills that match the repo role
 

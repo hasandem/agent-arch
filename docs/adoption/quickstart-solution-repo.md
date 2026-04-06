@@ -17,6 +17,11 @@ Use the `solution-standard` installation profile instead of copying files one by
 
 ```text
 your-solution-repo/
+├── .agents/
+│   └── skills/
+│       └── agent-arch-install/
+│           ├── SKILL.md
+│           └── install-method.sh
 ├── .github/
 │   ├── copilot-instructions.md
 │   ├── agent-arch/
@@ -46,12 +51,20 @@ your-solution-repo/
 ## Step 1: Install `solution-standard`
 
 ```sh
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
+```
+
+This installs the only current normative local method surface for solution repositories, listed in `.github/agent-arch/solution-standard.manifest`.
+The bootstrap skill itself is placed in `.agents/skills/agent-arch-install/` for GitHub Copilot.
+
+Fallback when `npx skills` is unavailable:
+
+```sh
 mkdir -p scripts
 curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
 sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
 ```
-
-This installs the only current normative local method surface for solution repositories, listed in `.github/agent-arch/solution-standard.manifest`.
 
 ## Step 2: Add repository instructions
 

@@ -1,6 +1,7 @@
 # source|target|mode
 templates/service/AGENTS.md.tmpl|.github/copilot-instructions.md|0644
 .github/skills/agent-arch-install/SKILL.md|.github/skills/agent-arch-install/SKILL.md|0644
+.github/skills/agent-arch-install/install-method.sh|.github/skills/agent-arch-install/install-method.sh|0755
 .github/skills/arch-intake/SKILL.md|.github/skills/arch-intake/SKILL.md|0644
 .github/skills/arch-consume/SKILL.md|.github/skills/arch-consume/SKILL.md|0644
 .github/skills/arch-consume/scripts/classify-impact.sh|.github/skills/arch-consume/scripts/classify-impact.sh|0755
