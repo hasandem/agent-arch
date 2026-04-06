@@ -9,16 +9,20 @@
 #   arch-read <file> --section <name>   # Specific section
 #   arch-read --index <layer>           # Level 1: INDEX.md for a layer
 #   arch-read --search <query>          # Search all agent summaries
+#   arch-read --solution-space          # List solution-space records
+#   arch-read --search-solution-space <query>
 #
 # Examples:
 #   arch-read fiat/informasjon/fhir/consent.md
 #   arch-read fiat/informasjon/fhir/consent.md --solution
 #   arch-read --index informasjon
 #   arch-read --search "MedicationRequest"
+#   arch-read --solution-space
 
 set -euo pipefail
 
-ARCH_DIR="${ARCH_DIR:-/tmp/arch}"
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+ARCH_DIR="${ARCH_DIR:-$SCRIPT_DIR}"
 
 # ─── Colors (only if terminal) ─────────────────────────────────────
 if [ -t 1 ]; then
@@ -45,13 +49,38 @@ ${BOLD}USAGE:${RESET}
   arch-read <file> --section <name>   Specific section (fuzzy match)
   arch-read --index <layer>           INDEX.md for a layer (level 1)
   arch-read --search <query>          Search all agent summaries
+    arch-read --solution-space          List solution-space records
+    arch-read --search-solution-space <query>
+                                                                            Search only solution-space records
   arch-read --list                    Show all layers and INDEX files
   arch-read --tokens <file>           Estimate tokens per section
 
 ${BOLD}ENVIRONMENT VARIABLES:${RESET}
-  ARCH_DIR    Path to arch-repo (default: /tmp/arch)
+  ARCH_DIR    Path to arch-repo (default: script location)
 EOF
     exit 0
+}
+
+extract_solution_space_status() {
+    local file="$1"
+
+    awk '
+    BEGIN { in_status=0 }
+    /^## / {
+        if ($0 == "## Status") {
+            in_status=1
+            next
+        }
+        if (in_status) exit
+    }
+    in_status && /^- \[x\]/ {
+        status = $0
+        sub(/^- \[x\] */, "", status)
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", status)
+        print status
+        exit
+    }
+    ' "$file"
 }
 
 # Extract a named section from a markdown file.
@@ -207,6 +236,53 @@ search_summaries() {
     fi
 }
 
+list_solution_space() {
+    local dir="${ARCH_DIR}/docs/solution-space"
+
+    if [ ! -d "$dir" ]; then
+        echo "Solution-space directory not found: ${dir}" >&2
+        exit 1
+    fi
+
+    echo -e "${BOLD}Available solution-space records:${RESET}"
+
+    find "$dir" -maxdepth 1 -type f -name '*.md' ! -name 'README.md' | sort | while IFS= read -r file; do
+        rel_path="${file#${ARCH_DIR}/}"
+        status=$(extract_solution_space_status "$file")
+        if [ -n "$status" ]; then
+            printf '  %s [%s]\n' "$rel_path" "$status"
+        else
+            printf '  %s\n' "$rel_path"
+        fi
+    done
+}
+
+search_solution_space() {
+    local query="$1"
+    local dir="${ARCH_DIR}/docs/solution-space"
+    local found=0
+
+    if [ ! -d "$dir" ]; then
+        echo "Solution-space directory not found: ${dir}" >&2
+        exit 1
+    fi
+
+    while IFS= read -r -d '' file; do
+        if grep -qi "$query" "$file"; then
+            found=1
+            rel_path="${file#${ARCH_DIR}/}"
+            echo -e "${BOLD}${CYAN}═══ ${rel_path} ═══${RESET}"
+            extract_agent_summary "$file" || true
+            echo ""
+        fi
+    done < <(find "$dir" -type f -name '*.md' -print0 2>/dev/null)
+
+    if [ "$found" -eq 0 ]; then
+        echo "No solution-space records contain '${query}'" >&2
+        exit 1
+    fi
+}
+
 # List available layers
 list_layers() {
     echo -e "${BOLD}Available layers in ${ARCH_DIR}:${RESET}"
@@ -286,6 +362,13 @@ case "$1" in
     --search)
         [ $# -lt 2 ] && { echo "Usage: arch-read --search <keyword>" >&2; exit 1; }
         search_summaries "$2"
+        ;;
+    --solution-space)
+        list_solution_space
+        ;;
+    --search-solution-space)
+        [ $# -lt 2 ] && { echo "Usage: arch-read --search-solution-space <keyword>" >&2; exit 1; }
+        search_solution_space "$2"
         ;;
     --list)
         list_layers

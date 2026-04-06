@@ -34,8 +34,9 @@ Regardless of repo type:
 
 1. Start with the minimum pieces that make architecture reading and escalation work.
 2. Keep guidance, hooks, and CI aligned.
-3. Add automation only where the repository actually needs enforcement.
-4. Avoid copying this repository wholesale into every new repo.
+3. Add intake and solution-space support when the repository needs alignment, discovery, or reusable design context.
+4. Add automation only where the repository actually needs enforcement.
+5. Avoid copying this repository wholesale into every new repo.
 
 ## Related guides
 

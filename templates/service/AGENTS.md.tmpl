@@ -7,6 +7,7 @@ repository.
 
 Before architecture-sensitive implementation or review:
 
+- Use `arch-intake` when the repository must first be understood, aligned, or compared against central architecture.
 - Use `arch-consume` to resolve architecture context and impact.
 - Read central architecture with `arch-read` before changing shared contracts,
   APIs, FHIR models, or security-sensitive behavior.
@@ -41,6 +42,7 @@ export PATH="$PATH:$ARCH_DIR/scripts"
 ## Escalation Rules
 
 - Local implementation stays local when it does not change normative architecture.
+- Alternatives, chosen solutions, and guardrails can be captured in solution-space records when the repo needs reusable solution context.
 - Cross-repo dependencies should be made visible in the target repository with a
   dedicated issue.
 - Missing or unclear central architecture should be escalated through

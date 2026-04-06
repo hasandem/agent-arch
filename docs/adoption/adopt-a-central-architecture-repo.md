@@ -12,6 +12,7 @@ that other repositories consume.
 
 Add these parts first:
 
+- `arch-intake` if solution repositories should be able to align against this repo through a standard workflow
 - `arch-governance`
 - shared policy scripts
 - hook configuration
@@ -31,7 +32,8 @@ Add these parts first:
 4. Add shell-based validation and policy entrypoints.
 5. Configure hooks to call those entrypoints.
 6. Configure CI to use the same validation logic.
-7. Add service-repo templates and adoption guides.
+7. Add service-repo templates, including intake and solution-space templates when relevant.
+8. Add service-repo adoption guides.
 
 ## Minimum repository assets
 
@@ -39,6 +41,7 @@ At a minimum, a central architecture repository should provide:
 
 - a short root `README.md`
 - a documentation index under `docs/`
+- a clear place for solution-space guidance when solution-near decisions should be shared across repositories
 - reusable skills under `.github/skills/`
 - hooks under `.github/hooks/`
 - validation and policy scripts under `scripts/`

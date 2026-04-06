@@ -18,10 +18,11 @@ The repository is meant to be reusable across projects and domains.
 1. Architecture is organized by ArchiMate layers.
 2. Documents are agent-first and optimized for limited context windows.
 3. Target and solution architecture live in the same document.
-4. Agents read documentation at different depth levels depending on the task.
-5. Architecture changes are proposed through traceable issues and PRs.
-6. Security is cross-cutting, not an afterthought.
-7. Method comes before domain-specific examples.
+4. Solution-space records can capture alternatives and chosen solutions without becoming normative architecture.
+5. Agents read documentation at different depth levels depending on the task.
+6. Architecture changes are proposed through traceable issues and PRs.
+7. Security is cross-cutting, not an afterthought.
+8. Method comes before domain-specific examples.
 
 ## Layers
 
@@ -41,11 +42,25 @@ The repository is meant to be reusable across projects and domains.
 
 An agent typically works like this:
 
-1. Read central architecture with `arch-read`.
-2. Determine affected layers and security implications.
-3. Implement locally when normative architecture does not need to change.
-4. Escalate missing or unclear architecture with issues or PRs.
-5. Let hooks and CI enforce local and server-side validation.
+1. If the repository must first be understood, start with `arch-intake`.
+2. Read central architecture with `arch-read`.
+3. Determine affected layers and security implications.
+4. Implement locally when normative architecture does not need to change.
+5. Escalate missing or unclear architecture with issues or PRs.
+6. Let hooks and CI enforce local and server-side validation.
+
+## Solution space in the method
+
+The method now distinguishes between two kinds of architecture material:
+
+- canonical architecture documents, which remain the normative source of truth
+- solution-space records, which document alternatives, chosen solutions, and guardrails close to real repository work
+
+This helps other repositories understand not only the current recommendation,
+but also which options were considered and why one path was chosen.
+
+Solution-space records support architecture work, but they do not replace the
+target architecture.
 
 ## What belongs here
 

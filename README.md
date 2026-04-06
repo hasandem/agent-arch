@@ -6,20 +6,33 @@
 
 ## The problem we're solving
 
-Most teams have architecture documentation. It gets written once, put in a wiki,
-and then ignored. Developers don't read it. Architecture and code drift apart.
-Decisions are repeated. Mistakes are replicated.
+As a product grows in complexity — more services, more integrations, more people,
+more moving parts — architecture stops being optional. You need shared structure
+to reason about change, manage risk, and keep teams aligned. Without it, every
+decision is made in isolation, and the system drifts toward incoherence.
+
+The trouble is that *having* an architecture and *adhering* to it are two very
+different things. Architecture gets written once, put in a wiki, and then
+ignored. Developers don't read it. Code and documentation drift apart.
+Decisions are repeated. Mistakes are replicated. Over time, the gap between
+what the architecture says and what the system actually looks like only grows.
+
+Maintaining an architecture is hard because the world doesn't stand still.
+Requirements shift, technology evolves, teams reorganise, and the pressure to
+ship never lets up. Keeping the architecture accurate and relevant requires
+continuous effort — and that effort rarely wins against the next feature deadline.
 
 With AI agents writing more and more code, this problem gets worse. An agent
 that doesn't know about the architecture builds whatever looks right in the
 moment — without regard for the bigger picture. The result is technical debt
 at machine scale.
 
-And the problem compounds. As solutions grow in number and complexity, and
-development speed ramps up, architecture becomes *more* important — not less.
-Without shared guardrails, each new service and each new agent interaction
-adds another opportunity for inconsistency. The faster you move, the more you
-need a shared source of truth that everyone — human and machine — actually uses.
+We want to solve this. Not by writing better documents and hoping someone reads
+them, but by making architecture an active part of the entire product lifecycle
+— from early insight and design, through development and into long-term
+maintenance. We want the architecture to be *used* — by humans and AI agents
+alike — while building real-world products that serve users with their problems,
+in the kind of complex landscape where architecture matters most.
 
 ## What we're doing about it
 

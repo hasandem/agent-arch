@@ -13,6 +13,7 @@ governance repository.
 
 Add these parts first:
 
+- `arch-intake` when the repo needs alignment or discovery before implementation
 - `arch-consume`
 - `arch-escalate`
 - service-level agent instructions
@@ -26,9 +27,10 @@ repository is also intended to become a normative repository.
 1. Add repository instructions.
    - Start from [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl).
 2. Make `arch-read` available from the central architecture repository.
-3. Ensure agents can use `arch-consume` before architecture-sensitive work.
-4. Ensure agents can use `arch-escalate` when local work uncovers a gap in shared architecture.
-5. Add target-repo issue templates if repo-to-repo dependencies are common.
+3. Add intake and solution-space templates if the repo will align existing solutions or learn from pilots.
+4. Ensure agents can use `arch-consume` before architecture-sensitive work.
+5. Ensure agents can use `arch-escalate` when local work uncovers a gap in shared architecture.
+6. Add target-repo issue templates if repo-to-repo dependencies are common.
 
 ## Setup snippet
 
@@ -44,25 +46,28 @@ export PATH="$PATH:$ARCH_DIR/scripts"
 
 ## Working rules
 
-1. Read central architecture before changing shared contracts, APIs, FHIR models, or security-sensitive behavior.
-2. Keep local changes local when normative architecture does not need to change.
-3. If repo A depends on repo B, create an issue in repo B where the change must happen.
-4. If the real problem is a missing or unclear shared standard, escalate through `arch-escalate`.
-5. Keep validation commands explicit and runnable in the repository.
+1. If the repository must first be understood, use `arch-intake` before jumping into implementation.
+2. Read central architecture before changing shared contracts, APIs, FHIR models, or security-sensitive behavior.
+3. Keep local changes local when normative architecture does not need to change.
+4. If repo A depends on repo B, create an issue in repo B where the change must happen.
+5. If the real problem is a missing or unclear shared standard, escalate through `arch-escalate`.
+6. Keep validation commands explicit and runnable in the repository.
 
 ## Verification checklist
 
 Before calling the method adopted in a solution repository, verify:
 
 1. The agent can resolve and read central architecture.
-2. `arch-consume` is discoverable and usable.
-3. `arch-escalate` is discoverable and usable.
-4. Cross-repo dependency handling is explicit.
-5. The repository has service-level instructions that point to the method.
+2. `arch-intake` is available if the repository will align existing solutions or evaluate pilots.
+3. `arch-consume` is discoverable and usable.
+4. `arch-escalate` is discoverable and usable.
+5. Cross-repo dependency handling is explicit.
+6. The repository has service-level instructions that point to the method.
 
 ## Avoid these mistakes
 
 - Copying central-governance automation into every solution repo
+- Skipping intake even though the repository first needs alignment or discovery
 - Treating shared architecture as optional reading
 - Hiding dependencies in comments instead of target-repo issues
 - Mixing local implementation backlog with normative architecture changes

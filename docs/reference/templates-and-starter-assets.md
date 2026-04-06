@@ -23,9 +23,12 @@ These are the usual starting assets for a normal service or application repo.
 
 - [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl)
 - [templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl](../../templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl)
+- [templates/service/intake-brief.md.tmpl](../../templates/service/intake-brief.md.tmpl) when intake work is needed
+- [templates/service/solution-space-record.md.tmpl](../../templates/service/solution-space-record.md.tmpl) when the repo should document alternatives and chosen solutions
 
 ### Add or reference from the central architecture repo
 
+- `arch-intake` when the repo needs discovery or alignment before implementation
 - `arch-consume`
 - `arch-escalate`
 - `arch-systematic-debugging` when debugging guidance is wanted locally
@@ -71,6 +74,9 @@ and governance boundaries.
 | --- | --- | --- |
 | `templates/service/AGENTS.md.tmpl` | Yes | As template only |
 | `upstream-dependency.md.tmpl` | Often | As template only |
+| `intake-brief.md.tmpl` | When needed | As template only |
+| `solution-space-record.md.tmpl` | When needed | As template only |
+| `arch-intake` | When needed | Optional |
 | `arch-consume` | Yes | Optional |
 | `arch-escalate` | Yes | Optional |
 | `arch-governance` | No | Yes |

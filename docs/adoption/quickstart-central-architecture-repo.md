@@ -19,6 +19,7 @@ your-arch-repo/
 │   ├── hooks/
 │   │   └── arch-policy.json
 │   └── skills/
+│       ├── arch-intake/
 │       ├── arch-consume/
 │       ├── arch-escalate/
 │       ├── arch-governance/
@@ -26,6 +27,7 @@ your-arch-repo/
 ├── docs/
 │   ├── adoption/
 │   ├── method/
+│   ├── solution-space/
 │   └── reference/
 ├── scripts/
 │   ├── arch-policy.sh
@@ -49,6 +51,7 @@ to the same operating model.
 
 Copy these skill folders into `.github/skills/`:
 
+- `.github/skills/arch-intake/` when solution repositories should use a standard intake workflow
 - `.github/skills/arch-consume/`
 - `.github/skills/arch-escalate/`
 - `.github/skills/arch-governance/`
@@ -86,6 +89,7 @@ Create:
 - `docs/README.md`
 - `docs/adoption/`
 - `docs/method/`
+- `docs/solution-space/`
 - `docs/reference/`
 
 Use this repository's docs structure as the starting point.
@@ -97,6 +101,8 @@ Copy the templates the new architecture repo should publish for solution repos.
 At minimum:
 
 - `templates/service/AGENTS.md.tmpl`
+- `templates/service/intake-brief.md.tmpl`
+- `templates/service/solution-space-record.md.tmpl`
 - `templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl`
 
 ## Step 7: Start a fresh Copilot session
@@ -110,8 +116,8 @@ Check these behaviors:
 1. The agent can find and use `arch-governance`.
 2. Hooks run before and after relevant tool usage.
 3. `sh scripts/arch-policy.sh validate-local` works.
-4. The repo documents its method and adoption path under `docs/`.
-5. A solution repository can consume the repo using `arch-read` and the published templates.
+4. The repo documents its method, adoption path, and solution-space approach under `docs/`.
+5. A solution repository can consume the repo using `arch-read`, the published templates, and the documented intake workflow.
 
 ## Common mistakes
 

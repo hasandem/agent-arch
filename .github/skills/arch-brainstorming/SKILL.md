@@ -23,8 +23,9 @@ description: 'Use when scoping features, behavior changes, architecture changes,
    - local to the current repository
    - an escalation candidate for `arch-escalate`
    - a potential class A/B/C change in the central architecture repository
-6. Recommend one approach and explain why it best fits the arch method.
-7. If the user approves and the work is multi-step, continue with `arch-writing-plans`.
+6. When the discussion is solution-near and likely to be reused, capture the result in a solution-space record.
+7. Recommend one approach and explain why it best fits the arch method.
+8. If the user approves and the work is multi-step, continue with `arch-writing-plans`.
 
 ## Output Expectations
 

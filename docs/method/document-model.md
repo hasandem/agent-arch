@@ -33,6 +33,23 @@ Use increasing depth only when needed:
 3. `Løsningsarkitektur` for implementation work
 4. `Målarkitektur` for architecture changes
 
+## Solution-space records
+
+The canonical architecture documents still use the standard contract above.
+
+In addition, the method can use solution-space records for solution-near
+architecture work. These records live outside the strict normative document
+contract and are meant to capture:
+
+- alternatives that were considered
+- the chosen solution and its guardrails
+- rejected options and the reasons behind them
+- traceability back to intake, ADRs, issues, and later architecture updates
+
+This lighter record type is especially useful when learning from another
+repository, evaluating a pilot, or documenting why one solution path was
+chosen over another.
+
 ## `arch-read`
 
 `arch-read` is the method's context-efficient reader.
@@ -46,7 +63,12 @@ arch-read docs/arkitektur/informasjon/fhir/consent.md --solution
 arch-read docs/arkitektur/informasjon/fhir/consent.md --target
 arch-read docs/arkitektur/informasjon/fhir/consent.md --full
 arch-read --search "MedicationRequest"
+arch-read --solution-space
+arch-read --search-solution-space "intake"
 ```
+
+When solution-space is used often, these commands make it easier to find and
+reuse solution-near records without scanning the whole repository first.
 
 ## Contract rules
 
@@ -74,3 +96,4 @@ When impact is unclear, read architecture in this order:
 - Writing code: summary plus solution architecture
 - Reviewing impact: add security and adjacent layers
 - Proposing architecture changes: read the full target context
+- Understanding an existing repository: start with intake material and any relevant solution-space record

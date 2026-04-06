@@ -4,6 +4,7 @@
 
 Set up a new solution repository so agents can:
 
+- understand the current solution before implementation when needed
 - read central architecture before implementation
 - escalate missing shared architecture explicitly
 - handle cross-repo dependencies in the right place
@@ -17,11 +18,14 @@ your-solution-repo/
 ├── .github/
 │   ├── copilot-instructions.md
 │   ├── skills/
+│   │   ├── arch-intake/
 │   │   ├── arch-consume/
 │   │   ├── arch-escalate/
 │   │   └── arch-systematic-debugging/   # optional
 │   └── ISSUE_TEMPLATE/
 │       └── upstream-dependency.md
+├── docs/
+│   └── solution-space/
 └── AGENTS.md                            # or use only .github/copilot-instructions.md if preferred
 ```
 
@@ -44,6 +48,7 @@ Use the service template as your starting point:
 
 Copy these skill folders into the new repository under `.github/skills/`:
 
+- `.github/skills/arch-intake/` when the repository needs intake or alignment work
 - `.github/skills/arch-consume/`
 - `.github/skills/arch-escalate/`
 
@@ -54,7 +59,20 @@ Optional but recommended:
 Only add planning, review, or brainstorming wrappers if the team wants that
 workflow available locally.
 
-## Step 3: Add cross-repo dependency issue template
+## Step 3: Add intake and solution-space templates
+
+Copy when the repository needs to align an existing solution, assess a pilot, or
+document alternatives for reuse:
+
+- [templates/service/intake-brief.md.tmpl](../../templates/service/intake-brief.md.tmpl)
+- [templates/service/solution-space-record.md.tmpl](../../templates/service/solution-space-record.md.tmpl)
+
+Suggested target locations:
+
+- `docs/intake/intake-brief.md`
+- `docs/solution-space/<topic>.md`
+
+## Step 4: Add cross-repo dependency issue template
 
 Copy:
 
@@ -64,7 +82,7 @@ Rename it in the target repo to:
 
 - `.github/ISSUE_TEMPLATE/upstream-dependency.md`
 
-## Step 4: Make `arch-read` available
+## Step 5: Make `arch-read` available
 
 Add this setup snippet to your repo instructions or bootstrap docs:
 
@@ -78,11 +96,11 @@ fi
 export PATH="$PATH:$ARCH_DIR/scripts"
 ```
 
-## Step 5: Start a fresh Copilot session
+## Step 6: Start a fresh Copilot session
 
 After adding the files, start a new Copilot chat session in the repository.
 
-## Step 6: Verify the setup
+## Step 7: Verify the setup
 
 Ask the agent something that should trigger the installed skills.
 
@@ -94,6 +112,7 @@ Examples:
 
 Expected behavior:
 
+- the agent uses `arch-intake` when the repository first needs to be understood
 - the agent uses `arch-consume` before architecture-sensitive implementation
 - the agent uses `arch-escalate` when shared architecture must change
 - the agent prefers target-repo issues for cross-repo dependencies
@@ -102,6 +121,7 @@ Expected behavior:
 
 - Installing central-governance hooks in a normal solution repo
 - Forgetting to make `arch-read` available
+- Forgetting to add intake templates even though the repo needs alignment work
 - Copying every wrapper skill before the team actually needs them
 - Omitting the upstream dependency issue template even though the repo depends on other repos often
 

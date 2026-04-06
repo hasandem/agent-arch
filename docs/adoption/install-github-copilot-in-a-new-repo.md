@@ -33,6 +33,7 @@ central architecture repo and local repo conventions.
 
 For a solution repository, typically add:
 
+- `.github/skills/arch-intake/` when the repo needs intake or alignment support
 - `.github/skills/arch-consume/`
 - `.github/skills/arch-escalate/`
 - optional workflow wrappers like `.github/skills/arch-systematic-debugging/`
@@ -95,6 +96,7 @@ should live in the repository.
 Install:
 
 - service instructions
+- `arch-intake` when the repository must first be understood or aligned
 - `arch-consume`
 - `arch-escalate`
 - optional local workflow wrappers

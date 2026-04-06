@@ -15,6 +15,7 @@ arch method.
 ├── docs/
 │   ├── adoption/
 │   ├── method/
+│   ├── solution-space/
 │   └── reference/
 ├── scripts/
 ├── templates/
@@ -30,6 +31,7 @@ Reusable Copilot skills that guide agent behavior.
 
 Core skills in this repository include:
 
+- `arch-intake`
 - `arch-consume`
 - `arch-escalate`
 - `arch-governance`
@@ -57,6 +59,10 @@ Method and adoption documentation.
 
 This is intentionally separated from architecture content so the reusable method
 does not get buried inside one large strategy document.
+
+The `solution-space/` area can be used for solution-near records that show
+alternatives, chosen solutions, and traceable learning without turning those
+records into normative target architecture.
 
 ## Reusable-method pattern
 

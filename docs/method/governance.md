@@ -23,8 +23,9 @@ Use `arch-governance` for:
 
 ### Solution repositories
 
-Use `arch-consume` before architecture-sensitive implementation and
-`arch-escalate` when local work reveals a gap in normative architecture.
+Use `arch-intake` when a repository must first be understood, `arch-consume`
+before architecture-sensitive implementation, and `arch-escalate` when local
+work reveals a gap in normative architecture.
 
 ## Change classes
 
@@ -38,10 +39,11 @@ Use `arch-consume` before architecture-sensitive implementation and
 
 ### Solution repositories
 
-1. Read architecture first.
-2. Keep local changes local when possible.
-3. Create issues in target repos for cross-repo dependencies.
-4. Use `arch-escalate` when shared architecture must change.
+1. Start with `arch-intake` when the repository itself must first be analyzed.
+2. Read architecture first.
+3. Keep local changes local when possible.
+4. Create issues in target repos for cross-repo dependencies.
+5. Use `arch-escalate` when shared architecture must change.
 
 ### Central architecture repository
 
@@ -76,3 +78,18 @@ When repo A depends on repo B:
 2. Link back from repo A so the dependency is visible.
 3. Escalate to the central architecture repo only if the dependency also reveals
    a normative architecture gap.
+
+## Solution-space and traceability
+
+Solution-space records are informative, not normative.
+
+Use them to capture alternatives, chosen solutions, and guardrails in a way
+other repositories can understand and reuse.
+
+When a solution-space record reveals a reusable standard, missing contract, or
+cross-repository rule, move that learning forward through the normal traceable
+path:
+
+1. link the finding back to the intake brief or source repository work
+2. escalate through `arch-escalate` when shared architecture must change
+3. update canonical architecture or ADRs through controlled review

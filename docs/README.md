@@ -27,6 +27,10 @@ like `obra/superpowers` do it:
 - [Document model and reading flow](method/document-model.md)
 - [Governance and enforcement](method/governance.md)
 
+## Solution Space
+
+- [Solution-space records](solution-space/README.md)
+
 ## Reference
 
 - [Repository layout and artifacts](reference/repository-layout.md)

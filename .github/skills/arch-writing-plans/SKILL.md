@@ -14,16 +14,17 @@ description: 'Use when an approved design must be turned into an implementation 
 ## Procedure
 
 1. Confirm the plan starts from approved design and current architecture context.
-2. Break the work into small, testable tasks with exact file paths and verification steps.
-3. For every task, say which repository it belongs to and whether it is:
+2. Use any approved intake brief or solution-space record as explicit planning input when the work started with repository alignment or solution evaluation.
+3. Break the work into small, testable tasks with exact file paths and verification steps.
+4. For every task, say which repository it belongs to and whether it is:
    - local implementation
    - blocked by another solution repository
    - blocked by normative architecture that requires `arch-escalate`
-4. Include validation commands that match this method.
+5. Include validation commands that match this method.
    - In this repository, use `sh scripts/arch-policy.sh validate-local`.
    - In solution repositories, use the repo's local test and validation commands plus any `arch-read`-based checks that matter to the task.
-5. Mark any task that would create or change normative architecture as an escalation point instead of implementation work.
-6. Keep the plan lean.
+6. Mark any task that would create or change normative architecture as an escalation point instead of implementation work.
+7. Keep the plan lean.
    - No mandatory worktree steps unless the user asks for isolated workspaces.
    - No mandatory TDD language unless the team already works that way.
    - No default `docs/superpowers/` paths.
