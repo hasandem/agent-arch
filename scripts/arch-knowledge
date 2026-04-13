@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# arch-knowledge - CLI entrypoint for the arch-knowledge system
+#
+# Recursion guard: prevents infinite loops when this script is called from
+# within a uv/python environment that re-invokes the same script.
+#
+# Resolution order for Python:
+#   1. uv run (preferred — manages virtualenv automatically)
+#   2. python3 in PATH (fallback)
+
+set -euo pipefail
+
+# ---------------------------------------------------------------------------
+# Recursion guard
+# ---------------------------------------------------------------------------
+if [[ "${_ARCH_KNOWLEDGE_RUNNING:-}" == "1" ]]; then
+    echo "arch-knowledge: recursion detected, aborting" >&2
+    exit 1
+fi
+export _ARCH_KNOWLEDGE_RUNNING=1
+
+# ---------------------------------------------------------------------------
+# Locate the scripts/ directory (directory containing this script)
+# ---------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ---------------------------------------------------------------------------
+# Run the package
+# ---------------------------------------------------------------------------
+if command -v uv &>/dev/null; then
+    exec uv run --project "${SCRIPT_DIR}/.." python -m arch_knowledge "$@"
+else
+    exec python3 -m arch_knowledge "$@"
+fi
