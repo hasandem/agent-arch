@@ -11,7 +11,10 @@ import re
 from pathlib import Path
 from typing import Any
 
-import yaml
+try:
+    import yaml
+except ImportError:
+    yaml = None  # type: ignore[assignment]
 
 
 # ---------------------------------------------------------------------------
