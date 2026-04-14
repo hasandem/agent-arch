@@ -23,7 +23,6 @@ your-solution-repo/
 │           ├── SKILL.md
 │           └── install-method.sh
 ├── .github/
-│   ├── copilot-instructions.md
 │   ├── agent-arch/
 │   │   ├── source.env
 │   │   └── solution-standard.manifest
@@ -35,7 +34,16 @@ your-solution-repo/
 │   │   └── arch-systematic-debugging/
 │   └── ISSUE_TEMPLATE/
 │       └── upstream-dependency.md
+├── AGENTS.md
+├── CLAUDE.md
 ├── docs/
+│   ├── arch-knowledge/
+│   │   ├── README.md
+│   │   ├── arch-statement.md
+│   │   ├── compliance-profile.yaml
+│   │   ├── raw/
+│   │   ├── daily/
+│   │   └── knowledge/
 │   ├── intake/
 │   │   └── intake-brief.md
 │   └── solution-space/
@@ -43,6 +51,9 @@ your-solution-repo/
 ├── arch-read.sh
 └── scripts/
     ├── agent-arch-install.sh
+    ├── arch-knowledge
+    ├── arch-llm-adapter.py
+    ├── arch_knowledge/
     ├── arch-policy.sh
     ├── arch-read.sh
     └── common.sh
@@ -66,20 +77,23 @@ curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/ag
 sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
-## Step 2: Add repository instructions
+## Step 2: Use the installed instruction entry points
 
-Create one repository-level instruction entry point.
+`solution-standard` installs:
 
-Recommended options:
+- `AGENTS.md` as the shared instruction file for Codex, GitHub Copilot, and
+  other agents
+- `CLAUDE.md` as a thin Claude adapter that should defer to `AGENTS.md`
+- `docs/arch-knowledge/` starter files
+- `scripts/arch-knowledge` plus the Python package and generic adapter wrapper
 
-- `.github/copilot-instructions.md`
-- or `AGENTS.md`
+If either file already exists, bootstrap leaves it untouched unless you rerun
+the installer with `--force`.
 
-Do not use both unless you have a deliberate hierarchy reason.
-
-Use the service template as your starting point:
+Use the service template as your starting point or merge target:
 
 - [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl)
+- [templates/service/CLAUDE.md.tmpl](../../templates/service/CLAUDE.md.tmpl)
 
 ## Step 3: Point local tooling at central architecture
 
@@ -98,11 +112,23 @@ export PATH="$PATH:$PWD/scripts"
 
 The installed local `arch-read` wrapper uses `ARCH_DIR` to read the central architecture clone.
 
-## Step 4: Start a fresh Copilot session
+## Step 4: Configure the local LLM command
 
-After adding the files, start a new Copilot chat session in the repository.
+Set the adapter and the tool command you want to use:
 
-## Step 5: Verify the setup
+```sh
+export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+```
+
+Replace `ARCH_LLM_TOOL_CMD` with any command that reads prompt text on stdin
+and returns plain text on stdout.
+
+## Step 5: Start a fresh agent session
+
+After adding the files, start a new Claude, Copilot, or Codex session in the repository.
+
+## Step 6: Verify the setup
 
 Ask the agent something that should trigger the installed skills.
 
@@ -119,6 +145,8 @@ Expected behavior:
 - the agent uses `arch-consume` before architecture-sensitive implementation
 - the agent uses `arch-escalate` when shared architecture must change
 - the agent prefers target-repo issues for cross-repo dependencies
+- `arch-knowledge --help` works
+- `arch-knowledge lint` runs without needing a model
 
 ## Common mistakes
 

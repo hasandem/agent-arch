@@ -7,7 +7,12 @@ repository.
 
 Install or update the local method surface with `agent-arch-install`. The
 solution repository should rely only on the files installed by the approved
-`solution-standard` profile, not on a manual copy of arbitrary files from the central repository.
+`solution-standard` profile, not on a manual copy of arbitrary files from the
+central repository.
+
+This file is the shared instruction entry point for Codex, GitHub Copilot, and
+other agents that support `AGENTS.md`. If `CLAUDE.md` exists, it should defer
+to this file for all repository-wide policy and workflow rules.
 
 Before architecture-sensitive implementation or review:
 
@@ -44,7 +49,7 @@ fi
 export PATH="$PATH:$PWD/scripts"
 ```
 
-Install the approved local method surface with:
+Install or update the approved local method surface with:
 
 ```sh
 npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
@@ -58,6 +63,25 @@ mkdir -p scripts
 curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
 sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
 ```
+
+Bootstrap behavior:
+
+- installs `AGENTS.md` as the shared instruction file for most agents
+- installs a thin `CLAUDE.md` adapter for Claude-specific additions
+- does not overwrite an existing `AGENTS.md` or `CLAUDE.md` unless you install
+  with `--force`
+- continues to update the rest of the managed method surface normally
+
+## Arch Knowledge
+
+If the repository enables local architecture knowledge support, use:
+
+- `arch-knowledge flush`
+- `arch-knowledge compile`
+- `arch-knowledge lint`
+
+`flush` and `compile` use the configured LLM adapter command. `lint` is
+deterministic.
 
 ## Escalation Rules
 

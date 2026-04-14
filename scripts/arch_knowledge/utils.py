@@ -101,13 +101,43 @@ def extract_frontmatter(text: str) -> tuple[dict[str, Any], str]:
         return {}, text
 
     raw_yaml = match.group(1)
-    try:
-        data = yaml.safe_load(raw_yaml)
-    except yaml.YAMLError:
-        data = {}
+    data = _parse_frontmatter(raw_yaml)
 
     body = text[match.end():]
     return (data if isinstance(data, dict) else {}), body
+
+
+def _parse_frontmatter(raw_yaml: str) -> dict[str, Any]:
+    """Parse simple YAML frontmatter with an optional PyYAML dependency."""
+    if yaml is not None:
+        try:
+            data = yaml.safe_load(raw_yaml)
+            return data if isinstance(data, dict) else {}
+        except Exception:
+            return {}
+
+    result: dict[str, Any] = {}
+    current_list_key: str | None = None
+    for raw_line in raw_yaml.splitlines():
+        line = raw_line.rstrip()
+        if not line.strip():
+            continue
+        stripped = line.strip()
+        if stripped.startswith("- ") and current_list_key:
+            result.setdefault(current_list_key, []).append(stripped[2:].strip())
+            continue
+        current_list_key = None
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        key = key.strip()
+        value = value.strip()
+        if not value:
+            result[key] = []
+            current_list_key = key
+            continue
+        result[key] = value
+    return result
 
 
 # ---------------------------------------------------------------------------

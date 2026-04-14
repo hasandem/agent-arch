@@ -1,5 +1,6 @@
 # source|target|mode
-templates/service/AGENTS.md.tmpl|.github/copilot-instructions.md|0644
+templates/service/AGENTS.md.tmpl|AGENTS.md|0644
+templates/service/CLAUDE.md.tmpl|CLAUDE.md|0644
 .github/skills/agent-arch-install/SKILL.md|.github/skills/agent-arch-install/SKILL.md|0644
 .github/skills/agent-arch-install/install-method.sh|.github/skills/agent-arch-install/install-method.sh|0755
 .github/skills/arch-intake/SKILL.md|.github/skills/arch-intake/SKILL.md|0644
@@ -15,9 +16,26 @@ templates/service/AGENTS.md.tmpl|.github/copilot-instructions.md|0644
 templates/service/.github/ISSUE_TEMPLATE/upstream-dependency.md.tmpl|.github/ISSUE_TEMPLATE/upstream-dependency.md|0644
 templates/service/intake-brief.md.tmpl|docs/intake/intake-brief.md|0644
 templates/service/solution-space-record.md.tmpl|docs/solution-space/solution-space-record.md|0644
+templates/service/docs/arch-knowledge/README.md.tmpl|docs/arch-knowledge/README.md|0644
+templates/service/docs/arch-knowledge/arch-statement.md.tmpl|docs/arch-knowledge/arch-statement.md|0644
+templates/service/docs/arch-knowledge/compliance-profile.yaml.tmpl|docs/arch-knowledge/compliance-profile.yaml|0644
+templates/service/docs/arch-knowledge/raw/.gitkeep|docs/arch-knowledge/raw/.gitkeep|0644
+templates/service/docs/arch-knowledge/daily/.gitkeep|docs/arch-knowledge/daily/.gitkeep|0644
+templates/service/docs/arch-knowledge/knowledge/.gitkeep|docs/arch-knowledge/knowledge/.gitkeep|0644
 arch-read.sh|arch-read.sh|0755
+scripts/arch-knowledge|scripts/arch-knowledge|0755
+scripts/arch-llm-adapter.py|scripts/arch-llm-adapter.py|0755
 scripts/arch-read.sh|scripts/arch-read.sh|0755
 scripts/arch-policy.sh|scripts/arch-policy.sh|0755
 scripts/common.sh|scripts/common.sh|0644
 scripts/agent-arch-install.sh|scripts/agent-arch-install.sh|0755
+scripts/arch_knowledge/__init__.py|scripts/arch_knowledge/__init__.py|0644
+scripts/arch_knowledge/__main__.py|scripts/arch_knowledge/__main__.py|0644
+scripts/arch_knowledge/cli.py|scripts/arch_knowledge/cli.py|0644
+scripts/arch_knowledge/compile.py|scripts/arch_knowledge/compile.py|0644
+scripts/arch_knowledge/config.py|scripts/arch_knowledge/config.py|0644
+scripts/arch_knowledge/flush.py|scripts/arch_knowledge/flush.py|0644
+scripts/arch_knowledge/lint.py|scripts/arch_knowledge/lint.py|0644
+scripts/arch_knowledge/llm.py|scripts/arch_knowledge/llm.py|0644
+scripts/arch_knowledge/utils.py|scripts/arch_knowledge/utils.py|0644
 install/profiles/solution-standard.manifest|.github/agent-arch/solution-standard.manifest|0644

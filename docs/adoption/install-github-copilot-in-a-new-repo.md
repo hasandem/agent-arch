@@ -21,17 +21,17 @@ For solution repositories, use the `solution-standard` install profile rather th
 
 ### 1. Add workspace instructions
 
-Create:
+For solution repositories, prefer:
 
-- `.github/copilot-instructions.md`
+- `AGENTS.md` as the shared instruction file
+- `CLAUDE.md` only as a thin Claude-specific adapter
 
-Use this repository's file as the starting point when the target repository is a
-central architecture repository.
+When using the controlled install flow, those files are installed by the
+profile. If they already exist, bootstrap leaves them in place unless you use
+`--force`.
 
-For a solution repository, prefer a narrower instruction file that points to the
-central architecture repo and local repo conventions.
-
-When using the controlled install flow, this file is installed by the profile.
+Use `.github/copilot-instructions.md` only when a repository has a verified
+Copilot-specific need that cannot be expressed cleanly through `AGENTS.md`.
 
 ### 2. Install the normative profile for the repo role
 
@@ -89,10 +89,11 @@ Typical examples:
 
 For a solution repository, prefer the exact script set from `solution-standard` instead of selecting scripts manually.
 
-### 6. Restart the Copilot session
+### 6. Restart the agent session
 
 Open a new Copilot chat session after the files are added so the new workspace
-customizations are loaded.
+customizations are loaded. Apply the same rule for Claude or Codex after
+changing `AGENTS.md` or `CLAUDE.md`.
 
 ## Verify installation
 
@@ -124,7 +125,7 @@ should live in the repository.
 Install:
 
 - the `solution-standard` install profile, which is the only current normative solution profile
-- service instructions from that profile
+- `AGENTS.md` plus the thin `CLAUDE.md` adapter from that profile
 - `agent-arch-install`
 - `arch-intake`, `arch-consume`, and `arch-escalate`
 - optional local workflow wrappers that are explicitly added to `solution-standard`
@@ -150,6 +151,7 @@ Install:
 4. Confirm `.github/agent-arch/source.env` points at the intended public agent-arch repository.
 5. Start a fresh Copilot session after adding the files.
 6. Check that the workspace instruction file is present and does not conflict with another instruction file.
+7. If instructions are not behaving as expected, check `AGENTS.md` first and keep `CLAUDE.md` thin.
 
 ### Hooks are not behaving as expected
 

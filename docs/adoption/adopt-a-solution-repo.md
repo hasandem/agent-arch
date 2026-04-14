@@ -17,8 +17,9 @@ surface. Do not pick files manually from the central repository.
 Add these parts first:
 
 - the approved `solution-standard` install profile for solution repositories
-- service-level agent instructions from that profile
+- `AGENTS.md` plus the thin `CLAUDE.md` adapter from that profile
 - the skills and support files listed in the installed manifest
+- `arch-knowledge` scripts plus `docs/arch-knowledge/` starter files from that profile
 - cross-repo dependency issue templates when relevant
 
 Do not copy central-governance hooks and policy scripts unless the solution
@@ -32,6 +33,7 @@ repository is also intended to become a normative repository.
 3. Let the installer write `.github/agent-arch/source.env` so local scripts know which central repository they belong to.
 4. Ensure the installed profile puts local method scripts on `PATH`.
 5. Add target-repo issue templates if repo-to-repo dependencies are common.
+6. Configure `ARCH_LLM_TOOL_CMD` if the repository will use `arch-knowledge flush` and `compile`.
 
 ## Setup snippet
 
@@ -59,6 +61,17 @@ sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-st
 
 With the `npx skills` bootstrap path, the shared bootstrap skill is installed in `.agents/skills/agent-arch-install/` for GitHub Copilot before it materializes the normative local method surface into the repository itself.
 
+The installed profile also seeds `docs/arch-knowledge/` plus a generic
+`scripts/arch-llm-adapter.py` wrapper. Set:
+
+```sh
+export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+```
+
+Replace `ARCH_LLM_TOOL_CMD` with any command that accepts prompt text on stdin
+and returns plain text on stdout.
+
 ## Working rules
 
 1. If the repository must first be understood, use `arch-intake` before jumping into implementation.
@@ -68,6 +81,7 @@ With the `npx skills` bootstrap path, the shared bootstrap skill is installed in
 5. If the real problem is a missing or unclear shared standard, escalate through `arch-escalate`.
 6. Treat the installed manifest as the approved local method surface.
 7. Keep validation commands explicit and runnable in the repository.
+8. Treat local `knowledge/` as supportive context, not normative architecture.
 
 ## Verification checklist
 
@@ -81,6 +95,7 @@ Before calling the method adopted in a solution repository, verify:
 6. `arch-escalate` is discoverable and usable.
 7. Cross-repo dependency handling is explicit.
 8. The repository has service-level instructions that point to the method.
+9. `arch-knowledge --help` works if the local knowledge pipeline is enabled.
 
 ## Avoid these mistakes
 

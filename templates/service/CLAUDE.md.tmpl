@@ -1,0 +1,14 @@
+# Claude Adapter
+
+Read `AGENTS.md` first. That file is the shared repository contract for all
+agents.
+
+This file should stay thin and contain only Claude-specific additions:
+
+- keep repository policy and workflow rules in `AGENTS.md`
+- use Claude-specific hooks only when the repository has chosen to enable them
+- do not duplicate general architecture workflow rules here unless Claude needs
+  stricter wording for a known behavior difference
+
+If this repository already has a `CLAUDE.md`, merge the agent-arch guidance into
+that file instead of keeping two competing instruction sources.

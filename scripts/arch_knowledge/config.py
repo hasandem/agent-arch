@@ -1,8 +1,4 @@
-"""
-config.py - Configuration loading for arch-knowledge.
-
-Reads arch-statement.md and compliance-profile.yaml from the knowledge root.
-"""
+"""Configuration loading for arch-knowledge."""
 
 from __future__ import annotations
 
@@ -88,6 +84,9 @@ def load_compliance_profile(knowledge_root: Path) -> dict[str, Any]:
     if not profile_path.exists():
         return {}
 
+    if yaml is None:
+        return {}
+
     with profile_path.open(encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
 
@@ -103,49 +102,52 @@ def get_llm_config(knowledge_root: Path | None = None) -> dict[str, Any]:
     """
     Return LLM configuration, merging sources in priority order:
 
-    1. Environment variables (ARCH_LLM_PROVIDER, ARCH_LLM_MODEL, ARCH_LLM_BASE_URL, ARCH_LLM_API_KEY)
+    1. Environment variables (ARCH_LLM_ADAPTER, ARCH_LLM_TIMEOUT_SECONDS)
     2. compliance-profile.yaml [llm] section
     3. arch-statement.md llm-* keys
-    4. Built-in defaults (provider=anthropic, model=claude-3-5-haiku-20241022)
+    4. Built-in defaults
 
-    The returned dict has keys: provider, model, base_url (optional), api_key (optional).
+    The returned dict has keys: adapter_command and timeout_seconds.
     """
     defaults: dict[str, Any] = {
-        "provider": "anthropic",
-        "model": "claude-3-5-haiku-20241022",
+        "adapter_command": "",
+        "timeout_seconds": 60,
     }
 
     # Layer 3: arch-statement.md
     if knowledge_root is not None:
         statement = parse_arch_statement(knowledge_root)
-        if "llm-provider" in statement:
-            defaults["provider"] = statement["llm-provider"]
-        if "llm-model" in statement:
-            defaults["model"] = statement["llm-model"]
-        if "llm-base-url" in statement:
-            defaults["base_url"] = statement["llm-base-url"]
-        if "llm-api-key" in statement:
-            defaults["api_key"] = statement["llm-api-key"]
+        if "llm-adapter-command" in statement:
+            defaults["adapter_command"] = statement["llm-adapter-command"]
+        if "llm-timeout-seconds" in statement:
+            try:
+                defaults["timeout_seconds"] = int(statement["llm-timeout-seconds"])
+            except ValueError:
+                pass
 
     # Layer 2: compliance-profile.yaml [llm] section
     if knowledge_root is not None:
         profile = load_compliance_profile(knowledge_root)
         llm_section = profile.get("llm", {})
         if isinstance(llm_section, dict):
-            for key in ("provider", "model", "base_url", "api_key"):
-                if key in llm_section:
-                    defaults[key] = llm_section[key]
+            if "adapter_command" in llm_section:
+                defaults["adapter_command"] = llm_section["adapter_command"]
+            if "timeout_seconds" in llm_section:
+                try:
+                    defaults["timeout_seconds"] = int(llm_section["timeout_seconds"])
+                except (TypeError, ValueError):
+                    pass
 
     # Layer 1: environment variables (highest priority)
-    env_map = {
-        "ARCH_LLM_PROVIDER": "provider",
-        "ARCH_LLM_MODEL": "model",
-        "ARCH_LLM_BASE_URL": "base_url",
-        "ARCH_LLM_API_KEY": "api_key",
-    }
-    for env_var, cfg_key in env_map.items():
-        value = os.environ.get(env_var)
-        if value:
-            defaults[cfg_key] = value
+    adapter_command = os.environ.get("ARCH_LLM_ADAPTER")
+    if adapter_command:
+        defaults["adapter_command"] = adapter_command
+
+    timeout_value = os.environ.get("ARCH_LLM_TIMEOUT_SECONDS")
+    if timeout_value:
+        try:
+            defaults["timeout_seconds"] = int(timeout_value)
+        except ValueError:
+            pass
 
     return defaults

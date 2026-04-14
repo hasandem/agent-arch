@@ -33,6 +33,7 @@ These are the usual starting assets for a normal service or application repo.
 - `arch-escalate`
 - `arch-systematic-debugging` when debugging guidance is wanted locally
 - `arch-read` with `ARCH_DIR` pointed at a local clone of the central architecture repository
+- `arch-knowledge` starter files and scripts when the repo wants local context capture
 
 ### Usually do not copy
 
@@ -48,7 +49,7 @@ These are the starting assets for a repo that owns normative architecture.
 
 ### Copy directly or recreate from this repository
 
-- `.github/copilot-instructions.md`
+- `AGENTS.md` or another repo-level instruction file that points agents at the shared method
 - `.github/hooks/arch-policy.json`
 - `.github/skills/arch-governance/`
 - `.github/skills/arch-consume/`
@@ -74,6 +75,8 @@ and governance boundaries.
 | Asset | Solution repo | Central architecture repo |
 | --- | --- | --- |
 | `templates/service/AGENTS.md.tmpl` | Yes | As template only |
+| `templates/service/CLAUDE.md.tmpl` | Yes | As template only |
+| `templates/service/docs/arch-knowledge/*` | Yes | As template only |
 | `upstream-dependency.md.tmpl` | Often | As template only |
 | `intake-brief.md.tmpl` | When needed | As template only |
 | `solution-space-record.md.tmpl` | When needed | As template only |
