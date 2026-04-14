@@ -27,7 +27,7 @@ arch method.
 
 ### `.github/skills/`
 
-Reusable Copilot skills that guide agent behavior.
+Reusable agent skills that guide agent behavior.
 
 Core skills in this repository include:
 
@@ -46,7 +46,8 @@ logic must also be reused by CI.
 
 ### `scripts/`
 
-Shared shell entrypoints for reading, policy, and validation.
+Shared shell entrypoints for reading, policy, validation, bootstrap, and the
+local `arch-knowledge` pipeline.
 
 ### `templates/`
 

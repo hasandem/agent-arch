@@ -1,0 +1,44 @@
+# Arch Knowledge
+
+This directory holds the local architecture knowledge support files for the
+repository.
+
+## Structure
+
+- `raw/` imported or copied reference material
+- `daily/` append-oriented captured knowledge
+- `knowledge/` compiled local knowledge articles
+- `arch-statement.md` local configuration and intent
+- `compliance-profile.yaml` adapter and policy configuration
+
+## Commands
+
+```sh
+arch-knowledge flush
+arch-knowledge compile
+arch-knowledge lint
+```
+
+## Adapter setup
+
+Default bootstrap installs `scripts/arch-llm-adapter.py`.
+
+Set:
+
+```sh
+export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+```
+
+Replace `ARCH_LLM_TOOL_CMD` with any command that:
+
+- accepts prompt text on `stdin`
+- returns plain text on `stdout`
+
+Examples:
+
+```sh
+export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+export ARCH_LLM_TOOL_CMD="aichat"
+export ARCH_LLM_TOOL_CMD="python3 scripts/my-company-llm-wrapper.py"
+```

@@ -139,6 +139,14 @@ curl -fsSL "https://raw.githubusercontent.com/hasandem/agent-arch/main/scripts/a
 sh scripts/agent-arch-install.sh --repo hasandem/agent-arch --profile solution-standard
 ```
 
+The `solution-standard` bootstrap now treats repository instruction files as
+user-owned. By default it installs `AGENTS.md` as the shared instruction entry
+point for Codex, GitHub Copilot, and other agents, plus a thin `CLAUDE.md`
+adapter for Claude-specific additions. If either file already exists, the
+installer leaves it in place and continues with the rest of the method surface.
+Use `--force` only when you intentionally want the bootstrap to overwrite those
+instruction files.
+
 Then apply the same environment setup:
 
 ```sh
@@ -193,6 +201,178 @@ in `.agents/skills/agent-arch-install/` for GitHub Copilot. Running its
 method surface under `.github/`, `scripts/`, and the other paths listed in the
 installed manifest.
 
+## LLM-Agnostic Arch Knowledge
+
+This repository now includes a small `arch-knowledge` pipeline with three
+commands:
+
+- `arch-knowledge flush`
+- `arch-knowledge compile`
+- `arch-knowledge lint`
+
+The design goal is portability across agent tools and model providers.
+`flush` and `compile` are LLM-assisted, but they do not depend on any specific
+provider SDK. Instead, they call a user-configured adapter command over a small
+JSON stdin/stdout contract. `lint` is deterministic and never calls an LLM.
+
+### Directory layout
+
+The local knowledge base lives under:
+
+```text
+docs/arch-knowledge/
+├── raw/
+├── daily/
+├── knowledge/
+├── arch-statement.md
+├── compliance-profile.yaml
+└── .state.json
+```
+
+### Quick setup
+
+1. Bootstrap the repository with `solution-standard`.
+2. Ensure `scripts/` is on `PATH`.
+3. Set `ARCH_LLM_ADAPTER` to the installed adapter script.
+4. Set `ARCH_LLM_TOOL_CMD` to the command you want to use for model calls.
+
+Minimal config example:
+
+```yaml
+llm:
+  adapter_command: "python3 scripts/arch-llm-adapter.py"
+  timeout_seconds: 60
+```
+
+Minimal shell setup:
+
+```sh
+export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+export ARCH_LLM_TIMEOUT_SECONDS=60
+```
+
+`ARCH_LLM_TOOL_CMD` can point to any command that reads prompt text on `stdin`
+and returns plain text on `stdout`. Common patterns are:
+
+```sh
+export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+export ARCH_LLM_TOOL_CMD="aichat"
+export ARCH_LLM_TOOL_CMD="python3 scripts/my-company-llm-wrapper.py"
+```
+
+Bootstrap installs these starter files automatically:
+
+```text
+docs/arch-knowledge/
+├── README.md
+├── arch-statement.md
+├── compliance-profile.yaml
+├── raw/
+├── daily/
+└── knowledge/
+```
+
+### Adapter contract
+
+The configured adapter command must:
+
+- read one JSON request from `stdin`
+- write one JSON response to `stdout`
+- exit with code `0` on success
+
+Request example for `flush`:
+
+```json
+{
+  "task": "flush",
+  "system": "You are an architecture knowledge filter...",
+  "input": "raw text to filter",
+  "options": {
+    "max_chars": 15000
+  }
+}
+```
+
+Success response:
+
+```json
+{
+  "ok": true,
+  "content": "## Decisions\n- ..."
+}
+```
+
+Error response:
+
+```json
+{
+  "ok": false,
+  "error": "adapter failed"
+}
+```
+
+This lets the same pipeline work with local Ollama, hosted APIs, enterprise
+gateways, or any custom wrapper, as long as the wrapper obeys the contract.
+
+### Usage
+
+After bootstrap and adapter setup, verify the command surface:
+
+```sh
+arch-knowledge --help
+```
+
+Append architecture-relevant findings from stdin:
+
+```sh
+git show HEAD~1..HEAD | arch-knowledge flush --session-id "$(date +%s)"
+```
+
+Append from a file:
+
+```sh
+arch-knowledge flush --input-file .git/COMMIT_EDITMSG
+```
+
+Compile changed daily logs into knowledge articles:
+
+```sh
+arch-knowledge compile
+```
+
+Force recompilation of all daily logs:
+
+```sh
+arch-knowledge compile --all
+```
+
+Run deterministic health checks:
+
+```sh
+arch-knowledge lint
+```
+
+Recommended first-run sequence in a new repository:
+
+```sh
+arch-knowledge lint
+printf 'We decided to keep shared auth in a dedicated boundary.' | arch-knowledge flush
+arch-knowledge compile
+arch-knowledge lint
+```
+
+### Operational rules
+
+- Canonical architecture remains the normative source of truth.
+- `daily/` is append-oriented capture.
+- `knowledge/` is local synthesized support material.
+- `lint` must stay deterministic.
+- If the adapter is missing or fails, `flush` and `compile` fail clearly
+  without changing canonical architecture.
+- Existing `AGENTS.md` and `CLAUDE.md` are not overwritten during bootstrap
+  unless `--force` is used.
+
 ## What's in this repo
 
 Architecture documents are organized by ArchiMate layers under `docs/arkitektur/`:
@@ -203,9 +383,11 @@ with an agent summary, solution architecture, and target architecture.
 The repo also contains:
 
 - **scripts/** — tools for reading, validation, and policy enforcement
+- **scripts/arch-knowledge** — LLM-agnostic local knowledge pipeline wrapper
 - **install/profiles/** — controlled install manifests for consumer repositories
-- **templates/** — reusable templates for service repos
-- **.github/skills/** — Copilot skills that govern agent workflows
+- **templates/** — reusable templates for service repos, including `AGENTS.md`
+  and a thin `CLAUDE.md` adapter
+- **.github/skills/** — reusable agent skills that govern agent workflows
 - **.github/hooks/** — hooks that stop risky actions before they happen
 
 ## Key principles
@@ -244,7 +426,7 @@ instead of manually selecting files from the central repository.
 - [docs/adoption/adopt-a-central-architecture-repo.md](docs/adoption/adopt-a-central-architecture-repo.md) — minimum adoption path for a central architecture repository
 - [docs/adoption/quickstart-solution-repo.md](docs/adoption/quickstart-solution-repo.md) — copy/paste quickstart for a new solution repository
 - [docs/adoption/quickstart-central-architecture-repo.md](docs/adoption/quickstart-central-architecture-repo.md) — copy/paste quickstart for a new central architecture repository
-- [docs/adoption/install-github-copilot-in-a-new-repo.md](docs/adoption/install-github-copilot-in-a-new-repo.md) — how to install the method's Copilot skills and instructions in a new repository
+- [docs/adoption/install-github-copilot-in-a-new-repo.md](docs/adoption/install-github-copilot-in-a-new-repo.md) — how the shared bootstrap works for repositories that use GitHub Copilot
 - [docs/adoption/copilot-superpowers.md](docs/adoption/copilot-superpowers.md) — how selected Superpowers workflows map into GitHub Copilot
 - [docs/method/overview.md](docs/method/overview.md) — high-level method overview
 - [docs/method/document-model.md](docs/method/document-model.md) — document contract, reading levels, and `arch-read`
@@ -259,4 +441,4 @@ instead of manually selecting files from the central repository.
 - `scripts/` — tools for reading (`arch-read`), installation, validation, and policy
 - `install/profiles/solution-standard.manifest` — the only current normative install profile for solution repositories
 - `templates/` — templates for use in service repos
-- `.github/skills/` — Copilot skills for `agent-arch-install`, `arch-consume`, `arch-escalate`, `arch-governance`, and arch-compatible Superpowers wrappers such as brainstorming, planning, review, and debugging
+- `.github/skills/` — reusable skills for `agent-arch-install`, `arch-consume`, `arch-escalate`, `arch-governance`, and arch-compatible workflow wrappers such as brainstorming, planning, review, and debugging

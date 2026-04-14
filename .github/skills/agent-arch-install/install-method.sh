@@ -7,6 +7,7 @@ PROFILE=${AGENT_ARCH_PROFILE:-solution-standard}
 TARGET_DIR=${AGENT_ARCH_TARGET_DIR:-}
 SOURCE_ROOT=${AGENT_ARCH_SOURCE_ROOT:-}
 DRY_RUN=0
+FORCE=0
 
 usage() {
     cat <<EOF
@@ -21,6 +22,7 @@ Options:
   --profile <name>        Install profile (default: solution-standard)
   --target-dir <dir>      Target repository directory (default: detected repo root)
   --source-root <dir>     Read installer from a local checkout instead of GitHub
+  --force                 Overwrite existing AGENTS.md or CLAUDE.md
   --dry-run               Forward dry-run to the installer
   -h, --help              Show this help
 EOF
@@ -71,6 +73,10 @@ while [ $# -gt 0 ]; do
             SOURCE_ROOT=$2
             shift 2
             ;;
+        --force)
+            FORCE=1
+            shift
+            ;;
         --dry-run)
             DRY_RUN=1
             shift
@@ -114,6 +120,10 @@ fi
 
 if [ "$DRY_RUN" -eq 1 ]; then
     set -- "$@" --dry-run
+fi
+
+if [ "$FORCE" -eq 1 ]; then
+    set -- "$@" --force
 fi
 
 exec "$@"

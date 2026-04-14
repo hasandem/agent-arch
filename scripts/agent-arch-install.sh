@@ -7,6 +7,7 @@ REPO=${AGENT_ARCH_REPO:-}
 REF=${AGENT_ARCH_REF:-main}
 SOURCE_ROOT=${AGENT_ARCH_SOURCE_ROOT:-}
 DRY_RUN=0
+FORCE=0
 
 usage() {
     cat <<EOF
@@ -20,6 +21,7 @@ Options:
   --profile <name>        Install profile (default: solution-standard)
   --target-dir <dir>      Target repository directory (default: current directory)
   --source-root <dir>     Read files from a local checkout instead of GitHub
+  --force                 Overwrite existing AGENTS.md or CLAUDE.md
   --dry-run               Print planned file operations without writing files
   -h, --help              Show this help
 
@@ -67,14 +69,30 @@ install_entry() {
     destination_dir=$(dirname "$destination")
     temp_file="$destination.agent-arch.$$"
 
+    mkdir -p "$destination_dir"
+    fetch_to_stdout "$source_path" > "$temp_file"
+
+    case "$target_path" in
+        AGENTS.md|CLAUDE.md)
+            if [ -f "$destination" ] && [ "$FORCE" -ne 1 ]; then
+                if cmp -s "$temp_file" "$destination"; then
+                    printf '%s -> %s (unchanged)\n' "$source_path" "$target_path"
+                else
+                    printf '%s -> %s (skipped: existing file, use --force to overwrite)\n' "$source_path" "$target_path"
+                fi
+                rm -f "$temp_file"
+                return 0
+            fi
+            ;;
+    esac
+
     printf '%s -> %s\n' "$source_path" "$target_path"
 
     if [ "$DRY_RUN" -eq 1 ]; then
+        rm -f "$temp_file"
         return 0
     fi
 
-    mkdir -p "$destination_dir"
-    fetch_to_stdout "$source_path" > "$temp_file"
     chmod "$mode" "$temp_file"
     mv "$temp_file" "$destination"
 }
@@ -121,6 +139,10 @@ while [ $# -gt 0 ]; do
         --source-root)
             SOURCE_ROOT=$2
             shift 2
+            ;;
+        --force)
+            FORCE=1
+            shift
             ;;
         --dry-run)
             DRY_RUN=1
