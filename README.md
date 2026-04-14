@@ -81,10 +81,6 @@ Everything is traceable. Agents don't commit architecture changes silently.
 Use `npx skills` to install the bootstrap skill, then let that bootstrap skill
 materialize the exact approved method surface into the solution repository.
 
-Source repository:
-
-- `https://github.com/hasandem/agent-arch`
-
 At the moment there is one normative solution-repository profile:
 
 - `solution-standard`
@@ -94,31 +90,12 @@ supporting scripts for a normal consumer repository. Consumer repositories
 should not pick files manually from this repository and should not vendor the
 entire repository into their own tree.
 
-### Prerequisites
-
-Before installation, make sure the solution repository environment has:
-
-- `git`
-- `node` and `npx`
-- permission to create files under the repository root
-
-### Recommended Installation
-
-Run these commands from the root of the solution repository:
+Typical bootstrap flow in a solution repository:
 
 ```sh
-npx skills add hasandem/agent-arch --skill agent-arch-install -a github-copilot -y --copy
-sh .agents/skills/agent-arch-install/install-method.sh --repo hasandem/agent-arch --profile solution-standard
-```
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 
-This does two things:
-
-1. Installs the bootstrap skill into `.agents/skills/agent-arch-install/` for GitHub Copilot.
-2. Materializes the normative repository-local method surface defined by `solution-standard`.
-
-After that, configure the shell environment for the repository:
-
-```sh
 export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
 . .github/agent-arch/source.env
 if [ ! -d "$ARCH_DIR/.git" ]; then
@@ -129,14 +106,12 @@ fi
 export PATH="$PATH:$PWD/scripts"
 ```
 
-### Fallback Without `npx skills`
-
-If `npx skills` is unavailable, bootstrap the same method surface directly:
+Fallback when `npx skills` is unavailable:
 
 ```sh
 mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/hasandem/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo hasandem/agent-arch --profile solution-standard
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
+sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
 The `solution-standard` bootstrap now treats repository instruction files as
@@ -146,46 +121,6 @@ adapter for Claude-specific additions. If either file already exists, the
 installer leaves it in place and continues with the rest of the method surface.
 Use `--force` only when you intentionally want the bootstrap to overwrite those
 instruction files.
-
-Then apply the same environment setup:
-
-```sh
-export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
-. .github/agent-arch/source.env
-if [ ! -d "$ARCH_DIR/.git" ]; then
-   git clone --depth 1 "https://github.com/$AGENT_ARCH_SOURCE_REPO.git" "$ARCH_DIR"
-else
-   git -C "$ARCH_DIR" pull --ff-only
-fi
-export PATH="$PATH:$PWD/scripts"
-```
-
-### Verify The Installation
-
-After installation, these paths should exist in the solution repository:
-
-- `.github/copilot-instructions.md`
-- `.github/agent-arch/solution-standard.manifest`
-- `.github/agent-arch/source.env`
-- `scripts/agent-arch-install.sh`
-- `scripts/arch-read.sh`
-
-When installed through `npx skills`, this path should also exist:
-
-- `.agents/skills/agent-arch-install/install-method.sh`
-
-Then start a fresh Copilot session in the solution repository and test with prompts such as:
-
-- `Help me implement a change to a shared API`
-- `We need to change a shared contract`
-- `Debug this integration failure systematically`
-
-Expected behavior:
-
-- Copilot can discover the installed repository-local skills
-- `arch-consume` is available before architecture-sensitive implementation
-- `arch-escalate` is available when shared architecture must change
-- `arch-read` can resolve the central architecture clone through `ARCH_DIR`
 
 The installed manifest in `.github/agent-arch/solution-standard.manifest`
 defines the approved local method surface. If a consumer repository needs a new
