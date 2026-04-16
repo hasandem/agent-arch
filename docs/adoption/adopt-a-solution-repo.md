@@ -51,34 +51,33 @@ sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch
 ## Setup snippet
 
 ```sh
-npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
-sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/arch-init" -o scripts/arch-init
+chmod +x scripts/arch-init
+sh scripts/arch-init
 
 export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
-. .github/agent-arch/source.env
-if [ ! -d "$ARCH_DIR/.git" ]; then
-   git clone --depth 1 "https://github.com/$AGENT_ARCH_SOURCE_REPO.git" "$ARCH_DIR"
-else
-   git -C "$ARCH_DIR" pull --ff-only
-fi
 export PATH="$PATH:$PWD/scripts"
 ```
 
-Fallback when `npx skills` is unavailable:
+Use `--repo <owner>/agent-arch` when bootstrapping from a fork or mirror.
+
+Manual fallback when `arch-init` is unavailable:
 
 ```sh
-mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
-With the `npx skills` bootstrap path, the shared bootstrap skill is installed in `.agents/skills/agent-arch-install/` for GitHub Copilot before it materializes the normative local method surface into the repository itself.
+With the `arch-init` bootstrap path, the shared bootstrap skill is installed in
+`.agents/skills/agent-arch-install/` for GitHub Copilot before it materializes
+the normative local method surface into the repository itself.
 
 The installed profile also seeds `docs/arch-knowledge/` plus a generic
 `scripts/arch-llm-adapter.py` wrapper. Set:
 
 ```sh
-export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_ADAPTER="$PWD/scripts/arch-llm-adapter.py"
 export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
 ```
 
@@ -133,7 +132,7 @@ Before calling the method adopted in a solution repository, verify:
 7. The repository can document and trace deliberate local deviations from the current normative architecture.
 8. Cross-repo dependency handling is explicit.
 9. The repository has service-level instructions that point to the method.
-10. `arch-knowledge --help` works if the local knowledge pipeline is enabled.
+10. `arch-knowledge doctor` and `arch-knowledge --help` work if the local knowledge pipeline is enabled.
 
 ## Avoid these mistakes
 

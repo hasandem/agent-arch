@@ -1,2 +1,4 @@
 # Personal editor state — not part of the repo
 .obsidian/
+__pycache__/
+*.pyc

@@ -7,6 +7,7 @@ import sys
 
 from .compile import compile_knowledge
 from .config import find_knowledge_root
+from .doctor import doctor_knowledge
 from .flush import flush, flush_from_file
 from .lint import lint_knowledge
 
@@ -23,6 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     compile_parser.add_argument("--all", action="store_true", help="Recompile all daily logs")
     compile_parser.add_argument("--file", help="Compile only one daily log file")
 
+    subparsers.add_parser("doctor", help="Check bootstrap, adapter, PATH, and central repo access")
     subparsers.add_parser("lint", help="Run deterministic health checks on the knowledge base")
     return parser
 
@@ -52,6 +54,15 @@ def main(argv: list[str] | None = None) -> int:
         problems = lint_knowledge(knowledge_root)
         if not problems:
             print("OK: knowledge base passed lint")
+            return 0
+        for problem in problems:
+            print(problem)
+        return 1
+
+    if args.command == "doctor":
+        problems = doctor_knowledge()
+        if not problems:
+            print("OK: doctor checks passed")
             return 0
         for problem in problems:
             print(problem)

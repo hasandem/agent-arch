@@ -143,8 +143,8 @@ Everything is traceable. Agents don't commit architecture changes silently.
 
 ## How Solution Repos Adopt The Method
 
-Use `npx skills` to install the bootstrap skill, then let that bootstrap skill
-materialize the exact approved method surface into the solution repository.
+Use `arch-init` to install the bootstrap skill, materialize the exact approved
+method surface, refresh `ARCH_DIR`, and check whether `scripts/` is on `PATH`.
 
 At the moment there is one normative solution-repository profile:
 
@@ -164,6 +164,17 @@ entire repository into their own tree.
 Typical bootstrap flow in a solution repository:
 
 ```sh
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/arch-init" -o scripts/arch-init
+chmod +x scripts/arch-init
+sh scripts/arch-init
+```
+
+If you are bootstrapping from a fork or mirror, pass `--repo <owner>/agent-arch`.
+
+Manual fallback when `arch-init` cannot be used:
+
+```sh
 npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
 sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 
@@ -175,14 +186,6 @@ else
    git -C "$ARCH_DIR" pull --ff-only
 fi
 export PATH="$PATH:$PWD/scripts"
-```
-
-Fallback when `npx skills` is unavailable:
-
-```sh
-mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
 The `solution-standard` bootstrap now treats repository instruction files as
@@ -208,20 +211,21 @@ repository wants:
 - lightweight local knowledge support without changing the central repository's
   normative role
 
-The shell installer remains a supported fallback when `npx skills` is not
-available, but the intended bootstrap path is now the shared skill.
+The manual `npx skills` + `install-method.sh` flow remains a supported fallback,
+but the intended bootstrap path is now `arch-init`.
 
-When bootstrapped through `npx skills`, the shared bootstrap skill is installed
-in `.agents/skills/agent-arch-install/` for GitHub Copilot. Running its
-`install-method.sh` script then materializes the normative repository-local
-method surface under `.github/`, `scripts/`, and the other paths listed in the
+When bootstrapped through `arch-init`, the shared bootstrap skill is installed
+in `.agents/skills/agent-arch-install/` for GitHub Copilot, then its
+`install-method.sh` script materializes the normative repository-local method
+surface under `.github/`, `scripts/`, and the other paths listed in the
 installed manifest.
 
 ## LLM-Agnostic Arch Knowledge
 
-This repository now includes a small `arch-knowledge` pipeline with three
+This repository now includes a small `arch-knowledge` pipeline with four
 commands:
 
+- `arch-knowledge doctor`
 - `arch-knowledge flush`
 - `arch-knowledge compile`
 - `arch-knowledge lint`
@@ -251,19 +255,20 @@ docs/arch-knowledge/
 2. Ensure `scripts/` is on `PATH`.
 3. Set `ARCH_LLM_ADAPTER` to the installed adapter script.
 4. Set `ARCH_LLM_TOOL_CMD` to the command you want to use for model calls.
+5. Run `arch-knowledge doctor`.
 
 Minimal config example:
 
 ```yaml
 llm:
-  adapter_command: "python3 scripts/arch-llm-adapter.py"
+  adapter_command: "scripts/arch-llm-adapter.py"
   timeout_seconds: 60
 ```
 
 Minimal shell setup:
 
 ```sh
-export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_ADAPTER="$PWD/scripts/arch-llm-adapter.py"
 export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
 export ARCH_LLM_TIMEOUT_SECONDS=60
 ```
@@ -352,6 +357,7 @@ After bootstrap and adapter setup, verify the command surface:
 
 ```sh
 arch-knowledge --help
+arch-knowledge doctor
 ```
 
 Append architecture-relevant findings from stdin:
@@ -387,6 +393,7 @@ arch-knowledge lint
 Recommended first-run sequence in a new repository:
 
 ```sh
+arch-knowledge doctor
 arch-knowledge lint
 printf 'We decided to keep shared auth in a dedicated boundary.' | arch-knowledge flush
 arch-knowledge compile

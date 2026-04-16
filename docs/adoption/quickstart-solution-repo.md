@@ -55,6 +55,7 @@ your-solution-repo/
 ├── arch-read.sh
 └── scripts/
     ├── agent-arch-install.sh
+    ├── arch-init
     ├── arch-knowledge
     ├── arch-llm-adapter.py
     ├── arch_knowledge/
@@ -66,19 +67,24 @@ your-solution-repo/
 ## Step 1: Install `solution-standard`
 
 ```sh
-npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
-sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
+mkdir -p scripts
+curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/arch-init" -o scripts/arch-init
+chmod +x scripts/arch-init
+sh scripts/arch-init
 ```
 
-This installs the only current normative local method surface for solution repositories, listed in `.github/agent-arch/solution-standard.manifest`.
-The bootstrap skill itself is placed in `.agents/skills/agent-arch-install/` for GitHub Copilot.
+This installs the only current normative local method surface for solution
+repositories, listed in `.github/agent-arch/solution-standard.manifest`.
+`arch-init` installs the bootstrap skill, runs the approved installer, refreshes
+`ARCH_DIR`, and tells you if `scripts/` still needs to be added to `PATH`.
 
-Fallback when `npx skills` is unavailable:
+Use `--repo <owner>/agent-arch` if the bootstrap source is a fork or mirror.
+
+Manual fallback when `arch-init` is unavailable:
 
 ```sh
-mkdir -p scripts
-curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/agent-arch-install.sh" -o scripts/agent-arch-install.sh
-sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
+npx skills add <owner>/agent-arch --skill agent-arch-install -a github-copilot -y --copy
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
 ## Step 2: Use the installed instruction entry points
@@ -121,29 +127,24 @@ Use this pilot profile when the repository needs to:
 - capture local analysis against central architecture
 - document a deliberate local deviation in a reusable format
 
-## Step 3: Point local tooling at central architecture
+## Step 3: Keep local tooling pointed at central architecture
 
 Add this setup snippet to your repo instructions or bootstrap docs:
 
 ```sh
 export ARCH_DIR="${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}"
-. .github/agent-arch/source.env
-if [ ! -d "$ARCH_DIR/.git" ]; then
-    git clone --depth 1 "https://github.com/$AGENT_ARCH_SOURCE_REPO.git" "$ARCH_DIR"
-else
-    git -C "$ARCH_DIR" pull --ff-only
-fi
 export PATH="$PATH:$PWD/scripts"
 ```
 
-The installed local `arch-read` wrapper uses `ARCH_DIR` to read the central architecture clone.
+`arch-init` clones or refreshes the central repository at `ARCH_DIR`; keep that
+variable pointed at the same location in later shells.
 
 ## Step 4: Configure the local LLM command
 
 Set the adapter and the tool command you want to use:
 
 ```sh
-export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_ADAPTER="$PWD/scripts/arch-llm-adapter.py"
 export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
 ```
 
@@ -172,6 +173,7 @@ Expected behavior:
 - the agent uses `arch-escalate` when shared architecture must change
 - the agent prefers target-repo issues for cross-repo dependencies
 - `arch-knowledge --help` works
+- `arch-knowledge doctor` passes
 - `arch-knowledge lint` runs without needing a model
 
 If the optional pilot profile is installed, expected additional behavior is:

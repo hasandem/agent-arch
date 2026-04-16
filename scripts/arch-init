@@ -1,0 +1,256 @@
+#!/usr/bin/env sh
+set -eu
+
+PROFILE=solution-standard
+REPO=${AGENT_ARCH_REPO:-hasandem/agent-arch}
+ARCH_DIR=${ARCH_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-arch}
+DRY_RUN=0
+FORCE=0
+
+SKILL_DIR=.agents/skills/agent-arch-install
+INSTALL_METHOD=$SKILL_DIR/install-method.sh
+
+usage() {
+    cat <<EOF
+Usage: arch-init [options]
+
+Bootstrap a solution repository with the approved agent-arch method surface.
+
+Options:
+  --profile <name>    Install profile (default: solution-standard)
+  --dry-run           Show planned operations without writing files
+  --force             Overwrite existing AGENTS.md or CLAUDE.md
+  --arch-dir <path>   Clone or refresh the central repository here
+  --repo <owner/repo> Source repository (default: hasandem/agent-arch)
+  -h, --help          Show this help
+EOF
+}
+
+run_quiet() {
+    log_file=$(mktemp)
+    if "$@" >"$log_file" 2>&1; then
+        rm -f "$log_file"
+        return 0
+    fi
+
+    cat "$log_file" >&2
+    rm -f "$log_file"
+    return 1
+}
+
+manifest_count() {
+    manifest_path=".github/agent-arch/$PROFILE.manifest"
+    arch_repo_manifest=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)/install/profiles/$PROFILE.manifest
+
+    if [ -f "$manifest_path" ]; then
+        awk -F'|' 'NF >= 3 && $1 !~ /^[[:space:]]*#/ { count += 1 } END { print count + 0 }' "$manifest_path"
+        return 0
+    fi
+
+    if [ -f "$arch_repo_manifest" ]; then
+        awk -F'|' 'NF >= 3 && $1 !~ /^[[:space:]]*#/ { count += 1 } END { print count + 0 }' "$arch_repo_manifest"
+        return 0
+    fi
+
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "https://raw.githubusercontent.com/$REPO/main/install/profiles/$PROFILE.manifest" \
+            | awk -F'|' 'NF >= 3 && $1 !~ /^[[:space:]]*#/ { count += 1 } END { print count + 0 }'
+        return 0
+    fi
+
+    return 1
+}
+
+materialized_message() {
+    count=$(manifest_count || true)
+    if [ -n "${count:-}" ] && [ "$count" -gt 0 ] 2>/dev/null; then
+        printf '✓ Method surface materialized (%s files)\n' "$count"
+    else
+        printf '✓ Method surface materialized\n'
+    fi
+}
+
+load_installed_repo() {
+    if [ -f ".github/agent-arch/source.env" ]; then
+        installed_repo=$(awk -F= '
+            $1 == "AGENT_ARCH_SOURCE_REPO" {
+                sub(/^[^=]*=/, "", $0)
+                print $0
+                exit
+            }
+        ' ".github/agent-arch/source.env")
+        if [ -n "${installed_repo:-}" ]; then
+            printf '%s\n' "$installed_repo"
+            return 0
+        fi
+    fi
+
+    printf '%s\n' "$REPO"
+}
+
+ensure_skill() {
+    if [ -x "$INSTALL_METHOD" ]; then
+        printf '✓ Skill installed at %s/\n' "$SKILL_DIR"
+        return 0
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        printf '• Would install bootstrap skill with: npx skills add %s --skill agent-arch-install -a github-copilot -y --copy\n' "$REPO"
+        printf '✓ Skill installed at %s/\n' "$SKILL_DIR"
+        return 0
+    fi
+
+    if ! command -v npx >/dev/null 2>&1; then
+        echo "arch-init: npx is required to install the bootstrap skill." >&2
+        echo "Remediation: install Node.js/npm, or use the manual fallback from README." >&2
+        exit 1
+    fi
+
+    if ! run_quiet npx skills add "$REPO" --skill agent-arch-install -a github-copilot -y --copy; then
+        echo "arch-init: failed to install bootstrap skill." >&2
+        echo "Remediation: rerun 'npx skills add $REPO --skill agent-arch-install -a github-copilot -y --copy'" >&2
+        exit 1
+    fi
+
+    if [ ! -x "$INSTALL_METHOD" ]; then
+        echo "arch-init: bootstrap skill was not materialized at $INSTALL_METHOD." >&2
+        echo "Remediation: rerun 'npx skills add $REPO --skill agent-arch-install -a github-copilot -y --copy'" >&2
+        exit 1
+    fi
+
+    printf '✓ Skill installed at %s/\n' "$SKILL_DIR"
+}
+
+run_install() {
+    force_suffix=""
+    if [ "$FORCE" -eq 1 ]; then
+        force_suffix=" --force"
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ] && [ ! -x "$INSTALL_METHOD" ]; then
+        printf '• Would materialize method surface with: sh %s --repo %s --profile %s%s --dry-run\n' \
+            "$INSTALL_METHOD" "$REPO" "$PROFILE" "$force_suffix"
+        materialized_message
+        return 0
+    fi
+
+    if [ ! -x "$INSTALL_METHOD" ]; then
+        echo "arch-init: missing installer at $INSTALL_METHOD." >&2
+        echo "Remediation: run 'npx skills add $REPO --skill agent-arch-install -a github-copilot -y --copy'" >&2
+        exit 1
+    fi
+
+    set -- sh "$INSTALL_METHOD" --repo "$REPO" --profile "$PROFILE"
+    if [ "$FORCE" -eq 1 ]; then
+        set -- "$@" --force
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        "$@" --dry-run
+        materialized_message
+        return 0
+    fi
+
+    if ! run_quiet "$@"; then
+        echo "arch-init: failed to materialize the local method surface." >&2
+        echo "Remediation: rerun '$INSTALL_METHOD --repo $REPO --profile $PROFILE$force_suffix'" >&2
+        exit 1
+    fi
+
+    materialized_message
+}
+
+ensure_arch_dir() {
+    source_repo=$(load_installed_repo)
+    repo_url="https://github.com/$source_repo.git"
+
+    if [ -d "$ARCH_DIR/.git" ]; then
+        if [ "$DRY_RUN" -eq 1 ]; then
+            printf '• Would refresh ARCH_DIR with: git -C %s pull --ff-only\n' "$ARCH_DIR"
+            printf '✓ ARCH_DIR ready at %s\n' "$ARCH_DIR"
+            return 0
+        fi
+
+        if ! run_quiet git -C "$ARCH_DIR" pull --ff-only; then
+            echo "arch-init: failed to refresh $ARCH_DIR." >&2
+            echo "Remediation: run 'git -C \"$ARCH_DIR\" pull --ff-only'" >&2
+            exit 1
+        fi
+
+        printf '✓ ARCH_DIR ready at %s\n' "$ARCH_DIR"
+        return 0
+    fi
+
+    if [ -e "$ARCH_DIR" ]; then
+        echo "arch-init: $ARCH_DIR exists but is not a git repository." >&2
+        echo "Remediation: rm -rf \"$ARCH_DIR\" && git clone --depth 1 \"$repo_url\" \"$ARCH_DIR\"" >&2
+        exit 1
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        printf '• Would clone central repo with: git clone --depth 1 %s %s\n' "$repo_url" "$ARCH_DIR"
+        printf '✓ ARCH_DIR ready at %s\n' "$ARCH_DIR"
+        return 0
+    fi
+
+    parent_dir=$(dirname "$ARCH_DIR")
+    mkdir -p "$parent_dir"
+    if ! run_quiet git clone --depth 1 "$repo_url" "$ARCH_DIR"; then
+        echo "arch-init: failed to clone the central repository into $ARCH_DIR." >&2
+        echo "Remediation: run 'git clone --depth 1 \"$repo_url\" \"$ARCH_DIR\"'" >&2
+        exit 1
+    fi
+
+    printf '✓ ARCH_DIR ready at %s\n' "$ARCH_DIR"
+}
+
+path_status() {
+    scripts_dir=$PWD/scripts
+    case ":$PATH:" in
+        *:"$scripts_dir":*)
+            printf '✓ PATH includes %s\n' "$scripts_dir"
+            ;;
+        *)
+            printf '⚠ PATH does not include scripts/ — add: export PATH="$PATH:$PWD/scripts"\n'
+            ;;
+    esac
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --profile)
+            PROFILE=$2
+            shift 2
+            ;;
+        --dry-run)
+            DRY_RUN=1
+            shift
+            ;;
+        --force)
+            FORCE=1
+            shift
+            ;;
+        --arch-dir)
+            ARCH_DIR=$2
+            shift 2
+            ;;
+        --repo)
+            REPO=$2
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+
+ensure_skill
+run_install
+ensure_arch_dir
+path_status
