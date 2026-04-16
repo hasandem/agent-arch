@@ -149,7 +149,7 @@ def doctor_knowledge(start: Path | None = None) -> list[str]:
             ["git", "ls-remote", repo_url],
             capture_output=True,
             text=True,
-            timeout=15,
+            timeout=10,
             check=False,
         )
     except OSError as exc:

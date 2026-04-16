@@ -40,15 +40,15 @@ run_quiet() {
 
 manifest_count() {
     manifest_path=".github/agent-arch/$PROFILE.manifest"
-    local_manifest=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)/install/profiles/$PROFILE.manifest
+    arch_repo_manifest=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)/install/profiles/$PROFILE.manifest
 
     if [ -f "$manifest_path" ]; then
         awk -F'|' 'NF >= 3 && $1 !~ /^[[:space:]]*#/ { count += 1 } END { print count + 0 }' "$manifest_path"
         return 0
     fi
 
-    if [ -f "$local_manifest" ]; then
-        awk -F'|' 'NF >= 3 && $1 !~ /^[[:space:]]*#/ { count += 1 } END { print count + 0 }' "$local_manifest"
+    if [ -f "$arch_repo_manifest" ]; then
+        awk -F'|' 'NF >= 3 && $1 !~ /^[[:space:]]*#/ { count += 1 } END { print count + 0 }' "$arch_repo_manifest"
         return 0
     fi
 
@@ -72,11 +72,20 @@ materialized_message() {
 
 load_installed_repo() {
     if [ -f ".github/agent-arch/source.env" ]; then
-        # shellcheck disable=SC1091
-        . ".github/agent-arch/source.env"
+        installed_repo=$(awk -F= '
+            $1 == "AGENT_ARCH_SOURCE_REPO" {
+                sub(/^[^=]*=/, "", $0)
+                print $0
+                exit
+            }
+        ' ".github/agent-arch/source.env")
+        if [ -n "${installed_repo:-}" ]; then
+            printf '%s\n' "$installed_repo"
+            return 0
+        fi
     fi
 
-    printf '%s\n' "${AGENT_ARCH_SOURCE_REPO:-$REPO}"
+    printf '%s\n' "$REPO"
 }
 
 ensure_skill() {
