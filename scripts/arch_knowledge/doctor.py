@@ -13,7 +13,7 @@ DEFAULT_SOURCE_REPO = "hasandem/agent-arch"
 
 
 def _default_arch_dir() -> Path:
-    cache_home = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
+    cache_home = Path(os.environ.get("XDG_CACHE_HOME", str(Path.home() / ".cache")))
     return Path(os.environ.get("ARCH_DIR", cache_home / "agent-arch")).expanduser()
 
 
