@@ -33,3 +33,13 @@ def test_cli_lint_returns_non_zero_on_problems(capsys):
     captured = capsys.readouterr()
     assert exit_code == 1
     assert "problem one" in captured.out
+
+
+def test_cli_doctor_returns_zero_when_clean(capsys):
+    """Doctor should return exit code 0 when no problems are found."""
+    with patch("arch_knowledge.cli.doctor_knowledge", return_value=[]):
+        exit_code = main(["doctor"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "doctor checks passed" in captured.out

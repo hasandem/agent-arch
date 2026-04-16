@@ -24,6 +24,7 @@ templates/service/docs/arch-knowledge/daily/.gitkeep|docs/arch-knowledge/daily/.
 templates/service/docs/arch-knowledge/knowledge/.gitkeep|docs/arch-knowledge/knowledge/.gitkeep|0644
 arch-read.sh|arch-read.sh|0755
 scripts/arch-knowledge|scripts/arch-knowledge|0755
+scripts/arch-init|scripts/arch-init|0755
 scripts/arch-llm-adapter.py|scripts/arch-llm-adapter.py|0755
 scripts/arch-read.sh|scripts/arch-read.sh|0755
 scripts/arch-policy.sh|scripts/arch-policy.sh|0755

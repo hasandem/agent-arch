@@ -35,8 +35,14 @@ Default bootstrap installs `scripts/arch-llm-adapter.py`.
 Set:
 
 ```sh
-export ARCH_LLM_ADAPTER="python3 scripts/arch-llm-adapter.py"
+export ARCH_LLM_ADAPTER="$PWD/scripts/arch-llm-adapter.py"
 export ARCH_LLM_TOOL_CMD="llm -m gpt-4.1-mini"
+```
+
+Then verify the setup:
+
+```sh
+arch-knowledge doctor
 ```
 
 Replace `ARCH_LLM_TOOL_CMD` with any command that:
