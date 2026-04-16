@@ -23,7 +23,12 @@ def _load_source_metadata(repo_root: Path) -> dict[str, str]:
         return {}
 
     values: dict[str, str] = {}
-    for line in metadata_path.read_text(encoding="utf-8").splitlines():
+    try:
+        contents = metadata_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return {"__error__": str(exc)}
+
+    for line in contents.splitlines():
         stripped = line.strip()
         if not stripped or stripped.startswith("#") or "=" not in stripped:
             continue
@@ -73,9 +78,16 @@ def doctor_knowledge(start: Path | None = None) -> list[str]:
     repo_root = find_repo_root(start) or (start.resolve() if start else Path.cwd().resolve())
     scripts_dir = repo_root / "scripts"
     metadata = _load_source_metadata(repo_root)
+    metadata_error = metadata.get("__error__", "").strip()
     source_repo = os.environ.get("AGENT_ARCH_SOURCE_REPO", metadata.get("AGENT_ARCH_SOURCE_REPO", "")).strip()
     arch_dir = _default_arch_dir()
     problems: list[str] = []
+
+    if metadata_error:
+        problems.append(
+            "ERROR: Could not read .github/agent-arch/source.env. "
+            f"Run: chmod 0644 {repo_root / '.github' / 'agent-arch' / 'source.env'}"
+        )
 
     adapter_value = os.environ.get("ARCH_LLM_ADAPTER", "").strip()
     if not adapter_value:

@@ -73,3 +73,21 @@ def test_doctor_rejects_adapter_shell_command(tmp_path, monkeypatch):
     problems = doctor_knowledge(start=repo_root)
 
     assert any("must point directly to an executable file" in problem for problem in problems)
+
+
+def test_doctor_reports_unreadable_source_metadata(tmp_path, monkeypatch):
+    """Doctor should report a remediation command when source metadata cannot be read."""
+    repo_root = tmp_path / "repo"
+    (repo_root / ".git").mkdir(parents=True)
+    (repo_root / "scripts").mkdir()
+    metadata_dir = repo_root / ".github" / "agent-arch"
+    metadata_dir.mkdir(parents=True)
+    source_env = metadata_dir / "source.env"
+    source_env.write_text("AGENT_ARCH_SOURCE_REPO=hasandem/agent-arch\n", encoding="utf-8")
+    monkeypatch.chdir(repo_root)
+    monkeypatch.setenv("PATH", "/usr/bin")
+
+    with patch("pathlib.Path.read_text", side_effect=UnicodeDecodeError("utf-8", b"x", 0, 1, "boom")):
+        problems = doctor_knowledge(start=repo_root)
+
+    assert any("Could not read .github/agent-arch/source.env" in problem for problem in problems)
