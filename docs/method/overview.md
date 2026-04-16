@@ -49,6 +49,27 @@ An agent typically works like this:
 5. Escalate missing or unclear architecture with issues or PRs.
 6. Let hooks and CI enforce local and server-side validation.
 
+## Creativity-First In Consumer Repositories
+
+The method also allows a creativity-first working mode in consuming
+repositories when the main need is insight work, local innovation, or
+evaluation of alternatives close to real solution work.
+
+In that mode:
+
+1. The consuming repository still reads central architecture as the normative
+   reference point.
+2. The team or agent may evaluate and choose a local solution that differs
+   from the current normative architecture.
+3. Such deviations must be deliberate, explicitly analyzed against the central
+   architecture, and documented in a traceable way.
+4. If the local learning suggests a better reusable pattern, contract, or
+   principle, it should feed back into the central repository through the
+   normal proposal and review path.
+
+This means the central repository remains normative, while consuming
+repositories remain the primary place where new insight can emerge.
+
 ## Solution space in the method
 
 The method now distinguishes between two kinds of architecture material:
@@ -61,6 +82,10 @@ but also which options were considered and why one path was chosen.
 
 Solution-space records support architecture work, but they do not replace the
 target architecture.
+
+The same principle applies to local creativity-first knowledge in consuming
+repositories: it may support analysis, decisions, and innovation, but it does
+not become a peer source of truth next to canonical architecture.
 
 ## What belongs here
 

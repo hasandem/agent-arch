@@ -22,6 +22,12 @@ Add these parts first:
 - `arch-knowledge` scripts plus `docs/arch-knowledge/` starter files from that profile
 - cross-repo dependency issue templates when relevant
 
+Optional for creativity-first pilots in consuming repositories:
+
+- the additive `solution-creativity-first-pilot` profile
+- the `arch-context` skill
+- the local deviation record starter files under `docs/arch-knowledge/deviations/`
+
 Do not copy central-governance hooks and policy scripts unless the solution
 repository is also intended to become a normative repository.
 
@@ -34,6 +40,13 @@ repository is also intended to become a normative repository.
 4. Ensure the installed profile puts local method scripts on `PATH`.
 5. Add target-repo issue templates if repo-to-repo dependencies are common.
 6. Configure `ARCH_LLM_TOOL_CMD` if the repository will use `arch-knowledge flush` and `compile`.
+
+If the repository wants a minimal creativity-first pilot surface, apply this
+after `solution-standard`:
+
+```sh
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-creativity-first-pilot
+```
 
 ## Setup snippet
 
@@ -76,12 +89,36 @@ and returns plain text on stdout.
 
 1. If the repository must first be understood, use `arch-intake` before jumping into implementation.
 2. Read central architecture before changing shared contracts, APIs, FHIR models, or security-sensitive behavior.
-3. Keep local changes local when normative architecture does not need to change.
-4. If repo A depends on repo B, create an issue in repo B where the change must happen.
-5. If the real problem is a missing or unclear shared standard, escalate through `arch-escalate`.
-6. Treat the installed manifest as the approved local method surface.
-7. Keep validation commands explicit and runnable in the repository.
-8. Treat local `knowledge/` as supportive context, not normative architecture.
+3. Use creativity-first working practices when the first need is insight work, innovation, or evaluation of alternatives in the local solution repository.
+4. A local team may choose a path that differs from the current normative architecture, but only when that choice is deliberate, documented, and explicitly analyzed against the central architecture.
+5. If repo A depends on repo B, create an issue in repo B where the change must happen.
+6. If the real problem is a missing or unclear shared standard, escalate through `arch-escalate`.
+7. Treat the installed manifest as the approved local method surface.
+8. Keep validation commands explicit and runnable in the repository.
+9. Treat local `knowledge/` as supportive context, not normative architecture.
+
+## Creativity-First In A Solution Repository
+
+Creativity-first is the preferred mode when a consuming repository needs to do
+insight work before converging on a solution. The purpose is not to ignore
+central architecture, but to let teams compare their local reality against it,
+explore alternatives, and make deliberate choices.
+
+This means a solution repository may:
+
+- ingest local or external source material into its local knowledge support files
+- build local context and synthesize learning over time
+- choose a local implementation path that diverges from the current normative architecture
+
+But that freedom comes with obligations:
+
+- the current normative architecture must be read and treated as the comparison baseline
+- a local deviation must be explicitly justified against that baseline
+- the reasoning and evidence must be traceable in repository artifacts
+- if the local learning reveals a reusable improvement, the repository should feed it back through the normal escalation path instead of keeping it as an unspoken local exception
+
+Creativity-first therefore supports innovation in the consuming repository,
+while the central repository remains responsible for what becomes normative.
 
 ## Verification checklist
 
@@ -93,9 +130,10 @@ Before calling the method adopted in a solution repository, verify:
 4. `arch-intake` is available if the repository will align existing solutions or evaluate pilots.
 5. `arch-consume` is discoverable and usable.
 6. `arch-escalate` is discoverable and usable.
-7. Cross-repo dependency handling is explicit.
-8. The repository has service-level instructions that point to the method.
-9. `arch-knowledge --help` works if the local knowledge pipeline is enabled.
+7. The repository can document and trace deliberate local deviations from the current normative architecture.
+8. Cross-repo dependency handling is explicit.
+9. The repository has service-level instructions that point to the method.
+10. `arch-knowledge --help` works if the local knowledge pipeline is enabled.
 
 ## Avoid these mistakes
 
@@ -103,6 +141,8 @@ Before calling the method adopted in a solution repository, verify:
 - Copying method files manually instead of using `solution-standard`
 - Skipping intake even though the repository first needs alignment or discovery
 - Treating shared architecture as optional reading
+- Treating local innovation as a substitute for explicit analysis against central architecture
+- Leaving a deliberate local deviation undocumented or untraceable
 - Hiding dependencies in comments instead of target-repo issues
 - Mixing local implementation backlog with normative architecture changes
 

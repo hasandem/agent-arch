@@ -17,6 +17,9 @@ behavior, templates, and validation hooks for its role.
 
 For solution repositories, use `solution-standard` rather than selecting files manually.
 
+If the repository is piloting creativity-first insight work, apply the
+additive `solution-creativity-first-pilot` profile after `solution-standard`.
+
 ## Starter assets for a solution repository
 
 These are the usual starting assets for a normal service or application repo.
@@ -34,6 +37,8 @@ These are the usual starting assets for a normal service or application repo.
 - `arch-systematic-debugging` when debugging guidance is wanted locally
 - `arch-read` with `ARCH_DIR` pointed at a local clone of the central architecture repository
 - `arch-knowledge` starter files and scripts when the repo wants local context capture
+- `arch-context` plus the deviation-record starter files when the repo wants a
+	structured creativity-first pilot for insight work and documented local deviations
 
 ### Usually do not copy
 
@@ -77,12 +82,14 @@ and governance boundaries.
 | `templates/service/AGENTS.md.tmpl` | Yes | As template only |
 | `templates/service/CLAUDE.md.tmpl` | Yes | As template only |
 | `templates/service/docs/arch-knowledge/*` | Yes | As template only |
+| `templates/service/docs/arch-knowledge/deviations/*` | Optional pilot | As template only |
 | `upstream-dependency.md.tmpl` | Often | As template only |
 | `intake-brief.md.tmpl` | When needed | As template only |
 | `solution-space-record.md.tmpl` | When needed | As template only |
 | `arch-intake` | When needed | Optional |
 | `arch-consume` | Yes | Optional |
 | `arch-escalate` | Yes | Optional |
+| `arch-context` | Optional pilot | Optional |
 | `arch-governance` | No | Yes |
 | hooks and shared policy scripts | No | Yes |
 | docs structure under `docs/` | Minimal | Yes |

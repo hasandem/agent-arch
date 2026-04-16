@@ -85,6 +85,12 @@ At the moment there is one normative solution-repository profile:
 
 - `solution-standard`
 
+There is also one optional additive pilot profile for consuming repositories
+that want to test creativity-first insight work without replacing the
+normative method surface:
+
+- `solution-creativity-first-pilot`
+
 That profile installs the expected local instructions, skills, templates, and
 supporting scripts for a normal consumer repository. Consumer repositories
 should not pick files manually from this repository and should not vendor the
@@ -126,6 +132,16 @@ The installed manifest in `.github/agent-arch/solution-standard.manifest`
 defines the approved local method surface. If a consumer repository needs a new
 method file, change the profile here in `agent-arch` rather than copying extra
 files manually downstream.
+
+The creativity-first pilot profile is additive. Install `solution-standard`
+first, then optionally apply `solution-creativity-first-pilot` when a consumer
+repository wants:
+
+- an `arch-context` skill for insight work and innovation
+- a template for documenting deliberate local deviations from the current
+  normative architecture
+- lightweight local knowledge support without changing the central repository's
+  normative role
 
 The shell installer remains a supported fallback when `npx skills` is not
 available, but the intended bootstrap path is now the shared skill.
@@ -207,6 +223,21 @@ docs/arch-knowledge/
 ├── daily/
 └── knowledge/
 ```
+
+If the repository installs the optional creativity-first pilot profile, it also
+gets:
+
+```text
+docs/arch-knowledge/
+└── deviations/
+  ├── README.md
+  └── local-deviation-record.md
+```
+
+Use those files when a consuming repository deliberately chooses a path that
+differs from the current normative architecture and needs to capture the
+baseline, the reasoning, and whether the learning should feed back into the
+central repository.
 
 ### Adapter contract
 

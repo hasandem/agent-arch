@@ -11,6 +11,11 @@ repository.
 - `arch-statement.md` local configuration and intent
 - `compliance-profile.yaml` adapter and policy configuration
 
+If the repository installs the optional creativity-first pilot profile, it also
+uses:
+
+- `deviations/` documented local deviations from the current normative architecture
+
 ## Commands
 
 ```sh
@@ -18,6 +23,10 @@ arch-knowledge flush
 arch-knowledge compile
 arch-knowledge lint
 ```
+
+If the repository uses `deviations/`, each record should make the normative
+baseline, the local choice, and any proposal back to central architecture
+explicit.
 
 ## Adapter setup
 

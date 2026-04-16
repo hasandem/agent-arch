@@ -1,7 +1,7 @@
 # Creativity-First Architecture Governance
 
 **Dato**: 2026-04-13
-**Status**: Godkjent design, klar for implementeringsplan
+**Status**: Godkjent konseptretning for konsumerende repoer, må innføres kontrollert
 **Inspirasjonskilder**: Andrej Karpathy (LLM Wiki), Cole Medin (claude-memory-compiler)
 
 ---
@@ -34,6 +34,26 @@ Vi snur modellen. I stedet for å gate kreativitet, **nærer** vi den med
 kontekst og **evaluerer** resultatet etterpå. Dette er samme skift som
 industrien har gjort fra waterfall til agile, fra pre-approval til code review,
 fra gatekeeping til observability.
+
+### Avgrensning og normativt forhold
+
+Creativity-first gjelder for **konsumerende repoer** som trenger innsiktsarbeid,
+utforskning og innovasjon tett på reelle løsningsbehov. Det sentrale
+arkitekturrepoet forblir samtidig den **normative** kilden for delt arkitektur,
+styrende prinsipper og governance.
+
+Det betyr:
+
+- konsumerende repoer skal lese og analysere mot sentral normativ arkitektur
+- konsumerende repoer kan gjøre **bevisste lokale valg** som avviker fra dagens
+   normerende arkitektur
+- slike avvik er bare gyldige når de er eksplisitt analysert, dokumentert og
+   sporbare
+- læring fra slike valg skal kunne føres tilbake som forslag til forbedring av
+   sentral normativ arkitektur
+
+Creativity-first er derfor ikke frihet **fra** arkitektur, men frihet til å
+utfordre arkitekturen gjennom eksplisitt analyse og sporbar læring.
 
 ### Inspirasjonskilder
 
@@ -81,47 +101,51 @@ intake → consume → [implementer under oppsyn] → escalate
           ↓ blokkert hvis ikke klassifisert
 ```
 
-### Til: Kontekst inn, compliance ut
+### Til: Kontekst inn, analyse og læring tilbake
 
 ```
 arch-context (frivillig, når som helst)
          ↓ inspirasjon
-    [implementer fritt og kreativt]
+    [analyser mot sentral normativ arkitektur]
+       ↓
+    [velg lokal løsning, evt. bevisst avvik]
          ↓ automatisk (hooks fanger kunnskap)
     daily/ logger → flush → compile → knowledge/
          ↓ bevisst handling
 arch-compliance (on-demand rapport)
          ↓ hvis ønskelig
-arch-propose (PR mot sentral arkitektur)
+arch-propose (forslag tilbake til sentral arkitektur)
 ```
 
 ### Tre skills + automatisk kunnskapsfangst
 
 | Komponent | Rolle |
 |---|---|
-| **`arch-context`** | Gir agenten arkitekturkontekst som inspirasjon. Bootstrapper og vedlikeholder lokal kunnskapsbase. Ingesterer nye kilder. |
-| **`arch-compliance`** | On-demand compliance-sjekk. Rapport med avvik, alvorlighet, tiltak. Agenten foreslår, mennesket bestemmer. |
-| **`arch-propose`** | Foreslår arkitekturendring tilbake til sentral arkitektur via PR. |
-| **Hooks + CLI** | Automatisk kunnskapsfangst via git hooks og CLI-kommandoer. Fanger arkitekturbeslutninger fra samtaler og kode. |
+| **`arch-context`** | Gir agenten arkitekturkontekst som inspirasjon og analysegrunnlag. Bootstrapper og vedlikeholder lokal kunnskapsbase. Ingesterer nye kilder. |
+| **`arch-compliance`** | On-demand analyse mot normativ arkitektur. Rapport med avvik, alvorlighet, tiltak og forslag. Agenten foreslår, mennesket bestemmer. |
+| **`arch-propose`** | Fører dokumentert lokal læring og begrunnede avvik tilbake til sentral arkitektur via sporbart forslag. |
+| **Hooks + CLI** | Automatisk kunnskapsfangst via git hooks og CLI-kommandoer. Fanger arkitekturbeslutninger, analyser og læring fra samtaler og kode. |
 
-### Hva som fjernes fra løsningsrepoer
+### Hva som endres i løsningsrepoer
 
-- **Alle blokkerende hooks** — erstattes av ikke-blokkerende kunnskapsfangst
-- **Sekvensiell skill-avhengighet** — ingen skill krever at en annen har kjørt
-- **Automatisk klassifisering** (Class A/B/C) — erstattes av konfigurerbar compliance-profil
-- **arch-intake**, **arch-consume**, **arch-escalate** — fjernes helt
-- **arch-brainstorming**, **arch-writing-plans**, **arch-systematic-debugging**,
-  **arch-requesting-code-review** — fjernes, standard agent-verktøy brukes
+- creativity-first blir primær arbeidsform for innsiktsarbeid og innovasjon
+- lokale beslutninger kan avvike fra gjeldende norm når de er bevisste,
+   dokumenterte og analysert mot sentral arkitektur
+- kunnskapsfangst og lokal læring prioriteres foran tidlig gating
+- sentral normativ arkitektur og sentral governance forblir autoritative
+- sporbar forslagssløyfe tilbake til sentral arkitektur blir viktigere enn lokal
+   passiv etterlevelse
 
 ### Designprinsipper
 
-1. **Arkitektur er kontekst og inspirasjon** — ikke en gate
-2. **Agenter har frihet til å innovere** — ingen pre-gating under implementasjon
-3. **Kunnskap fanges automatisk** — hooks og CLI sørger for compounding
-4. **Compliance sjekkes som en bevisst handling** — ikke per operasjon
-5. **Agenten foreslår tiltak, mennesket bestemmer** — compliance er rådgivende
-6. **Innovasjon flyter tilbake** — løsningsrepoer foreslår arkitekturendringer
-7. **Agentisk universalitet** — fungerer med alle AI-agenter via filer og CLI
+1. **Arkitektur er normativ referanse og inspirasjon** — ikke bare en gate
+2. **Agenter har frihet til å innovere** — men avvik skal være eksplisitt analysert
+3. **Bevisste lokale avvik er tillatt** når de er dokumenterte og sporbare
+4. **Kunnskap fanges automatisk** — hooks og CLI sørger for compounding
+5. **Compliance sjekkes som en bevisst handling** — ikke per operasjon
+6. **Agenten foreslår tiltak, mennesket bestemmer** — compliance er rådgivende
+7. **Innovasjon flyter tilbake** — løsningsrepoer foreslår oppdateringer av sentral arkitektur
+8. **Agentisk universalitet** — fungerer med alle AI-agenter via filer og CLI
 
 ---
 
@@ -503,6 +527,10 @@ forskjell på å *tvinge* en agent gjennom en sjekkliste og å *tilby* en
 kunnskapsbase den kan bruke når den trenger det. `arch-context` er agentens
 oppslagsverk — den bruker det når det gir verdi, ikke fordi den må.
 
+Skillen støtter også analyse av om en lokal løsning bør følge sentral normativ
+arkitektur eller om det finnes gode grunner til å velge noe annet i denne
+konteksten.
+
 ### Når den brukes
 
 - Frivillig, når som helst i arbeidsflyten
@@ -523,10 +551,12 @@ oppslagsverk — den bruker det når det gir verdi, ikke fordi den må.
    - Følg [[lenker]] for å bygge forståelse
    - Presenter nøkkelkontekst til agenten
 
-3. INGEST (når nye kilder finnes)
+3. INGEST OG ANALYSE (når nye kilder finnes)
    - Les kildedokument fra raw/
+   - Sammenlign med relevant sentral normativ arkitektur
    - Diskuter nøkkelfunn med utvikler
    - Opprett/oppdater knowledge-artikler med riktig type
+   - Fang om lokal løsning følger eller avviker fra normen, og hvorfor
    - Legg til [[lenker]]
    - Oppdater index.md og log.md
 
@@ -559,7 +589,7 @@ uten å bremse arbeidet underveis. Den er en *bevisst handling*.
 Compliance-rapporten har en dobbel rolle: den er både et **beslutningsgrunnlag**
 og en **kunnskapskilde**. Når den lagres som en `type: review` knowledge-artikkel,
 blir den input til neste compile-runde, og kunnskapsbasen blir rikere.
-Slik compounderer kunnskap — avvik blir til lærdom.
+Slik compounderer kunnskap — både etterlevelse og begrunnede avvik blir til lærdom.
 
 ### Når den brukes
 
@@ -688,12 +718,12 @@ gjort og *hvorfor* det fungerte.
    - Identifiser hvilke sentrale docs som berøres
    - Bygg argumentasjon basert på lokal erfaring
 
-2. KLASSIFISER ENDRING
-   - Klargjøring/tillegg → enklere PR
-   - Ny anbefaling/mønster → PR med begrunnelse
-   - Prinsipiell endring → Issue først, deretter PR
+2. KLASSIFISER FORSLAGET
+   - Lokal observasjon med begrenset rekkevidde → behold lokalt, men sporbart
+   - Ny anbefaling/mønster → forslag med begrunnelse og lokal evidens
+   - Prinsipiell endring → issue først, deretter PR
 
-3. OPPRETT PR MOT SENTRAL ARKITEKTUR
+3. OPPRETT SPORBAR FORSLAGSSLØYFE MOT SENTRAL ARKITEKTUR
    - Foreslå endringer i relevante docs i raw/
    - Foreslå oppdateringer i sentral knowledge/
    - Inkluder lenker til lokal evidens

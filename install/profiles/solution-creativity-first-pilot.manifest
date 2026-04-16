@@ -1,0 +1,5 @@
+# source|target|mode
+.github/skills/arch-context/SKILL.md|.github/skills/arch-context/SKILL.md|0644
+templates/service/docs/arch-knowledge/deviations/README.md.tmpl|docs/arch-knowledge/deviations/README.md|0644
+templates/service/docs/arch-knowledge/deviations/local-deviation-record.md.tmpl|docs/arch-knowledge/deviations/local-deviation-record.md|0644
+install/profiles/solution-creativity-first-pilot.manifest|.github/agent-arch/solution-creativity-first-pilot.manifest|0644

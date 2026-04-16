@@ -54,6 +54,14 @@ curl -fsSL "https://raw.githubusercontent.com/<owner>/agent-arch/main/scripts/ag
 sh scripts/agent-arch-install.sh --repo <owner>/agent-arch --profile solution-standard
 ```
 
+If the repository also wants the optional creativity-first pilot surface for
+insight work and documented local deviations, apply this profile after
+`solution-standard`:
+
+```sh
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-creativity-first-pilot
+```
+
 ### 3. Add the skills that match the repo role
 
 For a solution repository, typically add:
@@ -63,6 +71,7 @@ For a solution repository, typically add:
 - `.github/skills/arch-consume/`
 - `.github/skills/arch-escalate/`
 - optional workflow wrappers like `.github/skills/arch-systematic-debugging/`
+- `.github/skills/arch-context/` when the repository is piloting creativity-first insight work
 
 For a central architecture repository, typically add:
 
@@ -129,6 +138,12 @@ Install:
 - `agent-arch-install`
 - `arch-intake`, `arch-consume`, and `arch-escalate`
 - optional local workflow wrappers that are explicitly added to `solution-standard`
+
+Optional additive pilot install:
+
+- `solution-creativity-first-pilot`
+- `arch-context`
+- the local deviation record starter files under `docs/arch-knowledge/deviations/`
 
 Do not install central-governance hooks and scripts by default.
 

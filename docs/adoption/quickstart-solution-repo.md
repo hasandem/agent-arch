@@ -13,6 +13,9 @@ This quickstart is the minimum practical setup.
 
 Use the `solution-standard` installation profile instead of copying files one by one.
 
+If the repository wants to pilot creativity-first insight work, install the
+optional additive profile after `solution-standard`.
+
 ## Resulting file layout
 
 ```text
@@ -41,6 +44,7 @@ your-solution-repo/
 │   │   ├── README.md
 │   │   ├── arch-statement.md
 │   │   ├── compliance-profile.yaml
+│   │   ├── deviations/
 │   │   ├── raw/
 │   │   ├── daily/
 │   │   └── knowledge/
@@ -95,6 +99,28 @@ Use the service template as your starting point or merge target:
 - [templates/service/AGENTS.md.tmpl](../../templates/service/AGENTS.md.tmpl)
 - [templates/service/CLAUDE.md.tmpl](../../templates/service/CLAUDE.md.tmpl)
 
+## Optional Step: Install The Creativity-First Pilot Surface
+
+If the solution repository should support structured insight work and
+documented local deviations from current normative architecture, install the
+optional additive pilot profile after `solution-standard`:
+
+```sh
+sh .agents/skills/agent-arch-install/install-method.sh --repo <owner>/agent-arch --profile solution-creativity-first-pilot
+```
+
+This keeps `solution-standard` as the normative base profile and adds only:
+
+- `.github/skills/arch-context/`
+- `docs/arch-knowledge/deviations/README.md`
+- `docs/arch-knowledge/deviations/local-deviation-record.md`
+
+Use this pilot profile when the repository needs to:
+
+- explore alternatives before converging on a solution
+- capture local analysis against central architecture
+- document a deliberate local deviation in a reusable format
+
 ## Step 3: Point local tooling at central architecture
 
 Add this setup snippet to your repo instructions or bootstrap docs:
@@ -147,6 +173,12 @@ Expected behavior:
 - the agent prefers target-repo issues for cross-repo dependencies
 - `arch-knowledge --help` works
 - `arch-knowledge lint` runs without needing a model
+
+If the optional pilot profile is installed, expected additional behavior is:
+
+- `arch-context` is available for insight work and local innovation
+- the repository has a standard place to capture deliberate local deviations
+- local innovation still feeds reusable improvements back through normal escalation
 
 ## Common mistakes
 
