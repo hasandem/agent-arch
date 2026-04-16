@@ -106,7 +106,7 @@ def doctor_knowledge(start: Path | None = None) -> list[str]:
         problems.append(
             f"ERROR: ARCH_DIR '{arch_dir}' does not exist. "
             f"Run: export ARCH_DIR=\"{arch_dir}\" && git clone --depth 1 "
-            f"\"https://github.com/{repo_for_clone}.git\" \"$ARCH_DIR\""
+            f"\"https://github.com/{repo_for_clone}.git\" \"{arch_dir}\""
         )
     else:
         try:
