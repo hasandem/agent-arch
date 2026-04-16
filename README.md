@@ -62,6 +62,71 @@ installation surface rather than ad hoc copying. A consumer repository installs
 the exact approved local method files from this repository and then works only
 against that installed surface plus the central architecture clone.
 
+### Walkthrough: Adding rate-limiting to a public API
+
+This end-to-end example connects the method overview in
+[`docs/method/overview.md`](docs/method/overview.md) with the governance rules in
+[`docs/method/governance.md`](docs/method/governance.md).
+
+1. **Orient in architecture** — the agent starts by reading the relevant
+   application and security guidance for a planned rate-limit on a public API:
+
+   ```sh
+   arch-read --layer application --topic "Public API rate limiting"
+   arch-read --layer security --topic "Public API rate limiting"
+   ```
+
+2. **Check local knowledge** — before inventing a new pattern, the agent checks
+   whether the consuming repository already captured a local decision or
+   implementation constraint:
+
+   ```sh
+   arch-read --knowledge --topic "Public API rate limiting"
+   ```
+
+3. **Escalate the gap** — the application guidance explains where throttling
+   belongs, but the security layer has no normative standard for shared rate
+   limit headers or audit requirements, so the agent opens a traceable issue in
+   the central architecture repository:
+
+   ```sh
+   arch-escalate --kind policy-gap --layer security --title "Define normative rate-limiting policy for public APIs"
+   ```
+
+4. **Implement with visible annotation** — the feature still ships locally, but
+   the code shows that the implementation depends on an open architecture gap:
+
+   ```ts
+   export function applyPublicApiRateLimit(req, res, next) {
+     // ARCH-ESCALATE: hasandem/agent-arch#123
+     res.setHeader("RateLimit-Limit", "120");
+     res.setHeader("RateLimit-Remaining", remainingBudgetFor(req));
+     return next();
+   }
+   ```
+
+5. **Record the interim decision locally** — the agent flushes the reasoning
+   into local knowledge and creates a deviation record that names the normative
+   baseline, the temporary local choice, and the link back to the escalation:
+
+   ```sh
+   printf '%s\n' \
+     'Temporary public API rate-limit headers until central policy lands; see hasandem/agent-arch#123.' \
+     | arch-knowledge flush --session-id "rate-limit-public-api"
+   ```
+
+   The repository then adds a local deviation record under
+   `docs/arch-knowledge/deviations/` so the temporary choice stays reviewable.
+
+6. **Feedback-loop closes automatically** — when the central security policy is
+   merged, CI can scan for `ARCH-ESCALATE:` references, find every linked local
+   implementation, and prompt consuming repositories to replace the interim
+   deviation with the new normative rule.
+
+This demonstrates the full arch cycle: no silent policy invention, no waiting
+for a human reply before shipping, full traceability from code to issue, and an
+automatic path back from local deviation to shared architecture.
+
 ## How it works in practice
 
 An agent implementing a feature typically does this:
