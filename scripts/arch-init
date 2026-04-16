@@ -113,6 +113,18 @@ ensure_skill() {
 }
 
 run_install() {
+    force_suffix=""
+    if [ "$FORCE" -eq 1 ]; then
+        force_suffix=" --force"
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ] && [ ! -x "$INSTALL_METHOD" ]; then
+        printf '• Would materialize method surface with: sh %s --repo %s --profile %s%s --dry-run\n' \
+            "$INSTALL_METHOD" "$REPO" "$PROFILE" "$force_suffix"
+        materialized_message
+        return 0
+    fi
+
     if [ ! -x "$INSTALL_METHOD" ]; then
         echo "arch-init: missing installer at $INSTALL_METHOD." >&2
         echo "Remediation: run 'npx skills add $REPO --skill agent-arch-install -a github-copilot -y --copy'" >&2
@@ -132,7 +144,7 @@ run_install() {
 
     if ! run_quiet "$@"; then
         echo "arch-init: failed to materialize the local method surface." >&2
-        echo "Remediation: rerun '$INSTALL_METHOD --repo $REPO --profile $PROFILE${FORCE:+ --force}'" >&2
+        echo "Remediation: rerun '$INSTALL_METHOD --repo $REPO --profile $PROFILE$force_suffix'" >&2
         exit 1
     fi
 
